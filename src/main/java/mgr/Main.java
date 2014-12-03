@@ -1,24 +1,50 @@
 package mgr;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Random;
+
+import javax.swing.JFrame;
+
+import org.math.plot.Plot2DPanel;
 
 public class Main {
 
 	static int ITER = 2000;
+	static int TIME = 200;
 
 	public static void main(String[] args) {
 
-		Net net = new Net(20, 2);
-		System.out.println("------------------");
-		int i = 0;
-		System.out.println("t\tct");
-		while (i < ITER) {
-			updateOpinions(takeRandomNeighbors(net));
-			i++;
-			System.out.println(i + "\t" + countBasicTotalSynchrony(net));
+		System.out.println("Start!");
+		Plot2DPanel plot = new Plot2DPanel();
+
+		double[] ct = new double[TIME];
+		ct[0] = 0;
+		double[] t = new double[TIME];
+		int n = 6;
+		int k = 3;
+		
+		while (n <= 20) {
+			for (int run = 1; run <= ITER; run++) {
+				Net net = new Net(n, k);
+				int i = 0;
+
+				while (i < TIME) {
+
+					updateOpinions(takeRandomNeighbors(net));
+					ct[i] = ct[i] + countBasicTotalSynchrony(net) / ITER;
+					t[i] = i;
+					i++;
+				}
+			}
+			plot.addLinePlot("c(t) for n = "+n+", k = "+k, t, ct);
+			n = n + 2;
 		}
+
+		JFrame frame = new JFrame("a plot panel");
+		frame.setContentPane(plot);
+		frame.setVisible(true);
+		frame.setSize(500, 500);
+		System.out.println("End!");
 
 	}
 
@@ -51,7 +77,7 @@ public class Main {
 		if (diff <= 180)
 			f = (agent1.opinion + agent2.opinion) / 2;
 		else
-			f = (agent1.opinion + agent2.opinion) / 2 - 180;
+			f = ((agent1.opinion + agent2.opinion) / 2 ) - 180;
 
 		if (f >= 0) {
 			agent1.opinion = f;
@@ -67,18 +93,17 @@ public class Main {
 
 	public static double countBasicTotalSynchrony(Net net) {
 
-		int n = net.numVertices;
 		double ct = 0;
-		for (int i = 1; i < n; i++) {
+		for (int i = 1; i < net.numVertices; i++) {
 			double iOp = net.agentsVertices.get(i).opinion;
-			for (int j = i + 1; j <= n; j++) {
+			for (int j = i + 1; j <= net.numVertices; j++) {
 				double jOp = net.agentsVertices.get(j).opinion;
 				ct = ct
 						+ Math.min(Math.abs(iOp - jOp),
 								Math.abs(iOp - jOp - 360));
 			}
 		}
-		ct = ct / (n * (n - 1));
+		ct = ct / (net.numVertices * (net.numVertices - 1));
 		return ct;
 	}
 }

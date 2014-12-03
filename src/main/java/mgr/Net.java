@@ -39,16 +39,16 @@ public class Net {
 			net.addVertex(i);
 			agentsVertices.put(i, new Agent());
 		}
-		if (net.getVertexCount() == numVertices)
-			System.out.println("Vertex adding - completed!");
+		//if (net.getVertexCount() == numVertices)
+			//System.out.println("Vertex adding - completed!");
 		List<List<Integer>> connections = randomConnections();
-		System.out.println("Connections established!");
+		//System.out.println("Connections established!");
 		for (List<Integer> con : connections) {
 			net.addEdge(con.get(0).toString() + "-" + con.get(1).toString(),
 					con.get(0), con.get(1));
 
 		}
-		System.out.println("Graph is OK: " + isNumOfEdgesConst());
+		//System.out.println("Graph is OK: " + isNumOfEdgesConst());
 
 	}
 
