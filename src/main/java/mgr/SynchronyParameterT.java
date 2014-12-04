@@ -1,7 +1,11 @@
 package mgr;
 
+import java.util.HashMap;
+
 import org.math.plot.Plot2DPanel;
 import org.math.plot.Plot3DPanel;
+
+import edu.uci.ics.jung.algorithms.util.KMeansClusterer;
 
 public class SynchronyParameterT {
 
@@ -9,14 +13,14 @@ public class SynchronyParameterT {
     int TIME;
     double lambda;
 
-    int begN = 6;
-    int endN = 10;
-    int endK = 8;
-    int begK = 3;
+    int begN = 10;
+    int endN = 25;
+    int begK = 2;
+    int endK;
     
-    double[] n_vec = new double[endN-begN];
-    double[] k_vec = new double[endK-begK];
-    double[][] T_fun = new double[endN-begN][endK-begK];
+    
+    double[] n_vec = new double[(endN-begN)/2 ];  
+    double[][] T_fun = new double[(endN-begN)/2 + 1][(endN-begK)];
 
     public SynchronyParameterT() {
         this.ITER = Main.ITER;
@@ -41,19 +45,26 @@ public class SynchronyParameterT {
         this.TIME = time;
     }
 
-    private void processDynamics(){
+    public HashMap<Integer, HashMap<Integer, Double>> processDynamics(){
+        HashMap<Integer,HashMap<Integer,Double>> T_fun_map = new HashMap<>();
         System.out.println("Building ct(k) plot: ITER=" + ITER + " TIME="
                 + TIME);
         int k = begK;
         int n = begN;
         
         // DYNAMICS
- 
+        int n_iter = 0;
         while (n <= endN) {
-            while (k <= endK) {
+            System.out.println("For n = " + n);
+            endK = n - 5;
+            
+            k = begK;
+            HashMap<Integer, Double> kMap = new HashMap<>();
+            while (k <= endK && k < n) {
                 System.out.println("For k = " + k);
                 double T = 0;
                 double ct = 0;
+               
                 for (int run = 1; run <= ITER; run++) {
                     
                     Net net = new Net(n, k);
@@ -68,22 +79,27 @@ public class SynchronyParameterT {
                         }
                         i++;
                     }
-                    T_fun[n-begN][k-begK] = T;
+                   // T_fun[n_iter][k-begK] = T;
                 }
-                k_vec[k-begK] = k;
+              kMap.put(k, T);
                 k++;
             }
-            n_vec[n-begN] = n;
-            n++;
+            T_fun_map.put(n, kMap); 
+            n=n+2;
+           
         }
+        
+        System.out.println(T_fun_map);
+        return T_fun_map;
     }
 
     
     public Plot3DPanel createPlot() {
-        
+        System.out.println(n_vec);
+       // System.out.println(k_vec);
         processDynamics();
         Plot3DPanel plot = new Plot3DPanel();
-        plot.addGridPlot("T(n,k)", n_vec, k_vec, T_fun);
+        plot.addGridPlot("T(n,k)", T_fun);
         return plot;
     }
 

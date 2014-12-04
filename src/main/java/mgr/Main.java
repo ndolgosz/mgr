@@ -1,6 +1,7 @@
 package mgr;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -9,18 +10,25 @@ import org.math.plot.Plot2DPanel;
 
 public class Main {
 
-	static int ITER = 2000;
+	static int ITER = 50;
 	static int TIME = 200;
-	static double lambda = 0.5;
+	static double lambda = 20;
 
 	public static void main(String[] args) {
 
 		System.out.println("Start! ct(t,n)");
+		HashMap<Integer,HashMap<Integer,Double>> T_fun_map = 
+		       new SynchronyParameterT().processDynamics();
+		for (Integer key : T_fun_map.keySet()) {
+		    for (Integer key2 : T_fun_map.get(key).keySet()){
+		        System.out.println(key + " "+ key2+" "+T_fun_map.get(key).get(key2));
+		    }
+		}
 		
 		//BUILDING JFRAME
 		JFrame frame = new JFrame("a plot panel");
 		
-		frame.setContentPane(new SynchronyParameterT().createPlot());
+		//frame.setContentPane(new SynchronyParameterT().createPlot());
 		//frame.add(new PlotCt_K().createPlot());
 		frame.setVisible(true);
 		frame.setSize(1000, 500);
