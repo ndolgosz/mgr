@@ -11,39 +11,19 @@ public class Main {
 
 	static int ITER = 2000;
 	static int TIME = 200;
+	static double lambda = 0.5;
 
 	public static void main(String[] args) {
 
-		System.out.println("Start!");
-		Plot2DPanel plot = new Plot2DPanel();
-
-		double[] ct = new double[TIME];
-		ct[0] = 0;
-		double[] t = new double[TIME];
-		int n = 6;
-		int k = 3;
+		System.out.println("Start! ct(t,n)");
 		
-		while (n <= 20) {
-			for (int run = 1; run <= ITER; run++) {
-				Net net = new Net(n, k);
-				int i = 0;
-
-				while (i < TIME) {
-
-					updateOpinions(takeRandomNeighbors(net));
-					ct[i] = ct[i] + countBasicTotalSynchrony(net) / ITER;
-					t[i] = i;
-					i++;
-				}
-			}
-			plot.addLinePlot("c(t) for n = "+n+", k = "+k, t, ct);
-			n = n + 2;
-		}
-
+		//BUILDING JFRAME
 		JFrame frame = new JFrame("a plot panel");
-		frame.setContentPane(plot);
+		
+		frame.setContentPane(new PlotCt_N().createPlot());
+		//frame.add(new PlotCt_K().createPlot());
 		frame.setVisible(true);
-		frame.setSize(500, 500);
+		frame.setSize(1000, 500);
 		System.out.println("End!");
 
 	}
