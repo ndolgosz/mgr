@@ -20,7 +20,7 @@ public class Main {
 		//BUILDING JFRAME
 		JFrame frame = new JFrame("a plot panel");
 		
-		frame.setContentPane(new PlotCt_N().createPlot());
+		frame.setContentPane(new SynchronyParameterT().createPlot());
 		//frame.add(new PlotCt_K().createPlot());
 		frame.setVisible(true);
 		frame.setSize(1000, 500);
