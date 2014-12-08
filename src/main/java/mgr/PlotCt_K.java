@@ -7,7 +7,7 @@ public class PlotCt_K {
     int ITER;
     int TIME;
 
-    int endK = 12;
+    int endK = 19;
     int begK = 3;
     int n = 20;
 

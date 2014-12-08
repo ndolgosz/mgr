@@ -10,6 +10,9 @@ public class Agent {
     	Random gen = new Random();
         this.opinion = gen.nextDouble()*360;
     }
+    public Agent(Random gen) {
+        this.opinion = gen.nextDouble()*360;
+    }
     public void printOpinion() {    
         System.out.print("opinion: "+opinion);
     }

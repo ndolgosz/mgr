@@ -91,23 +91,6 @@ public class Net {
 		return mapToArray(totalCon);
 	}
 
-	public void updateOpinions(Agent agent1, Agent agent2) {
-		double f;
-		double diff = Math.abs(agent1.opinion - agent2.opinion);
-		if (diff <= 180)
-			f = (agent1.opinion + agent2.opinion) / 2;
-		else
-			f = (agent1.opinion + agent2.opinion) / 2 - 180;
-
-		if (f >= 0) {
-			agent1.opinion = f;
-			agent2.opinion = f;
-		} else {
-			agent1.opinion = f + 360;
-			agent2.opinion = f + 360;
-		}
-	}
-
 	public void printConnections(List<List<Integer>> connections) {
 		for (List<Integer> nCon : connections) {
 			System.out.println();
