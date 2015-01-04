@@ -22,7 +22,7 @@ public class PlotCt_K {
     }
 
     public Plot2DPanel createPlot() {
-
+    	DynamicsFunctions dynamics = new DynamicsFunctions();
         System.out.println("Building ct(k) plot: ITER="+ITER+" TIME="+TIME);
         int k = begK;
         Plot2DPanel plot = new Plot2DPanel();
@@ -38,8 +38,8 @@ public class PlotCt_K {
 
                 while (i < TIME) {
 
-                    Main.updateOpinions(Main.takeRandomNeighbors(net));
-                    ct[i] = ct[i] + Main.countBasicTotalSynchrony(net) / ITER;
+                	dynamics.updateOpinions(dynamics.takeRandomNeighbors(net));
+                    ct[i] = ct[i] + dynamics.countBasicTotalSynchrony(net) / ITER;
                     if (run == 1)
                         t[i] = i;
                     i++;

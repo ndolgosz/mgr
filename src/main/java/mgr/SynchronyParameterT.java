@@ -2,10 +2,8 @@ package mgr;
 
 import java.util.HashMap;
 
-import org.math.plot.Plot2DPanel;
 import org.math.plot.Plot3DPanel;
 
-import edu.uci.ics.jung.algorithms.util.KMeansClusterer;
 
 public class SynchronyParameterT {
 
@@ -46,6 +44,7 @@ public class SynchronyParameterT {
     }
 
     public HashMap<Integer, HashMap<Integer, Double>> processDynamics(){
+    	DynamicsFunctions dynamics = new DynamicsFunctions();
         HashMap<Integer,HashMap<Integer,Double>> T_fun_map = new HashMap<>();
         System.out.println("Building ct(k) plot: ITER=" + ITER + " TIME="
                 + TIME);
@@ -53,7 +52,6 @@ public class SynchronyParameterT {
         int n = begN;
         
         // DYNAMICS
-        int n_iter = 0;
         while (n <= endN) {
             System.out.println("For n = " + n);
             endK = n - 5;
@@ -71,8 +69,8 @@ public class SynchronyParameterT {
                     int i = 0;
                     while (i < TIME) {
 
-                        Main.updateOpinions(Main.takeRandomNeighbors(net));
-                        ct = Main.countBasicTotalSynchrony(net);
+                        dynamics.updateOpinions(dynamics.takeRandomNeighbors(net));
+                        ct = dynamics.countBasicTotalSynchrony(net);
                         if (ct <= lambda) {
                             T = T + i/ITER;
                             break;

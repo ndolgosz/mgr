@@ -22,7 +22,7 @@ public class PlotCt_N {
     }
     
     public Plot2DPanel createPlot(){
-        
+    	DynamicsFunctions dynamics = new DynamicsFunctions();
         int n = begN;
         Plot2DPanel plot = new Plot2DPanel();      
         //DYNAMICS 
@@ -36,14 +36,14 @@ public class PlotCt_N {
 
                 while (i < TIME) {
 
-                    Main.updateOpinions(Main.takeRandomNeighbors(net));
-                    ct[i] = ct[i] + Main.countBasicTotalSynchrony(net) / ITER;
+                	dynamics.updateOpinions(dynamics.takeRandomNeighbors(net));
+                    ct[i] = ct[i] + dynamics.countBasicTotalSynchrony(net) / ITER;
                     if(run == 1) t[i] = i;
                     i++;
                 }
             }
             plot.addLinePlot("c(t) for n = "+n+", k = "+k, t, ct);
-            n = n + 2;
+            n++;
         }
         return plot;
     }
