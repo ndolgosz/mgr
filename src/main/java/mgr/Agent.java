@@ -2,53 +2,42 @@ package mgr;
 
 import java.util.Random;
 
-import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 
 public class Agent {
 
-	private double opinion;
-	private int weight;
-	private int vertex;
+    private double opinion;
+    private int vertex;
+    private double weight;
 
-	public Agent(int vertex) {
-		Random gen = new Random();
-		this.opinion = gen.nextDouble() * 360;
-		this.vertex = vertex;
-	}
+    public Agent(int vertex) {
+        Random gen = new Random();
+        this.opinion = gen.nextDouble() * 360;
+        this.vertex = vertex;
+    }
 
-	public double getOpinion() {
-		return opinion;
-	}
+    public double getOpinion() {
+        return opinion;
+    }
 
-	public void setOpinion(double op) {
-		opinion = op;
-	}
-//TODO
-	public void countWeight(int BM, Graph<Integer, String> net) {
-		if (BM == vertex) {
-			weight = 0;
-			System.out.println(weight);
-			return;
-		} else if (net.getNeighbors(BM).contains(vertex)) {
-			weight = 1;
-			System.out.println(weight);
-			return;
-		}
+    public void setOpinion(double op) {
+        opinion = op;
+    }
 
-		for (Integer in : net.getNeighbors(BM)) {
-			if (net.getNeighbors(in).contains(vertex)) {
-				weight = 2;
-				System.out.println(weight);
-				return;
-			}
-		}
-		weight = 3;
-
-		System.out.println(weight);
-	}
-
-	public int getWeight() {
-		return weight;
-	}
+    public void countWeight(int BM,
+            Net net) {
+        DijkstraShortestPath<Integer, String> path = new DijkstraShortestPath<>(
+                net.net);
+        double d = (double) path.getDistance(BM, vertex);
+        weight = Math.pow((1.0 / (d + 1.0)), net.steepness);
+    }
+  
+    public int getVertex() {
+        return vertex;
+    }
+    
+    public double getWeight() {
+        return weight;
+    }
 
 }

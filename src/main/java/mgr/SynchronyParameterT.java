@@ -71,7 +71,7 @@ public class SynchronyParameterT {
 					Net net = new Net(n, k);
 					int i = 0;
 					while (ct > lambda && i < 300) {
-						dynamics.updateOpinions(dynamics
+						dynamics.updateOpinions_BasicModel(dynamics
 								.takeRandomNeighbors(net));
 						ct = dynamics.countBasicTotalSynchrony(net);
 						i++;

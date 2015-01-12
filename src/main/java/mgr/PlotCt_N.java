@@ -36,7 +36,7 @@ public class PlotCt_N {
 
                 while (i < TIME) {
 
-                	dynamics.updateOpinions(dynamics.takeRandomNeighbors(net));
+                	dynamics.updateOpinions_BasicModel(dynamics.takeRandomNeighbors(net));
                     ct[i] = ct[i] + dynamics.countBasicTotalSynchrony(net) / ITER;
                     if(run == 1) t[i] = i;
                     i++;
