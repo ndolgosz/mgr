@@ -1,7 +1,6 @@
 package mgr;
 
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -13,6 +12,8 @@ public class Net {
 
 	int numVertices;
 	int numEdges;
+	public int BM;
+	public int TI;
 	HashMap<Integer, Agent> agentsVertices;
 	Graph<Integer, String> net;
 
@@ -22,14 +23,17 @@ public class Net {
 		this.numVertices = n;
 		this.numEdges = k;
 		updateGraph();
+		Random r = new Random();
+		BM = r.nextInt(numVertices) + 1;
 	}
 
 	private void updateGraph() {
 
 		net = new UndirectedSparseGraph<Integer, String>();
+		
 		for (int i = 1; i <= numVertices; i++) {
 			net.addVertex(i);
-			agentsVertices.put(i, new Agent());
+			agentsVertices.put(i, new Agent(i));
 		}
 		// if (net.getVertexCount() == numVertices)
 		// System.out.println("Vertex adding - completed!");
@@ -44,20 +48,9 @@ public class Net {
 			}
 
 		}
-		// List<List<Integer>> connections = randomConnections();
-		// System.out.println("Connections established!");
-		/*
-		 * for (List<Integer> con : connections) {
-		 * net.addEdge(con.get(0).toString() + "-" + con.get(1).toString(),
-		 * con.get(0), con.get(1));
-		 * 
-		 * }
-		 */
-		// System.out.println("Graph is OK: " + isNumOfEdgesConst());
-
 	}
 
-	private void printConnectionsMatrix(Integer[][] connections) {
+	public static void printMatrix(int[][] connections) {
 		for (int i = 0; i < connections.length; i++) {
 			System.out.println();
 			System.out.print(i + "    ");
@@ -70,16 +63,11 @@ public class Net {
 
 	private int countSumOfRow(Integer[][] table, int columnNumber) {
 		int sumRow = 0;
-		int sumColumn = 0;
-
 		for (int i = 0; i < numVertices; i++) {
-			sumColumn = sumColumn + table[i][columnNumber];
 			sumRow = sumRow + table[columnNumber][i];
 		}
-		if (sumColumn == sumRow) {
-			return sumRow;
-		} else
-			throw new IndexOutOfBoundsException();
+		return sumRow;
+
 	}
 
 	private Integer[][] createZerosMatrix() {
@@ -124,12 +112,24 @@ public class Net {
 		}
 		return totalCon;
 	}
-
-	public void printConnections(List<List<Integer>> connections) {
-		for (List<Integer> nCon : connections) {
-			System.out.println();
-			for (Integer item : nCon)
-				System.out.print(item + " ");
+	public void setWeightsToEveryAgent(){
+		for (int j = 1; j <= numVertices; j++) {			
+			agentsVertices.get(j).countWeight(BM, net);
+		}
+	}
+	
+	public void chooseTI(double probability){
+		Random r = new Random();
+		double d = r.nextDouble();
+		if(d < probability){
+			TI = BM;
+		}
+		else {
+			int tmp = BM;
+			while(tmp == BM){
+				tmp = r.nextInt(numVertices)+1;
+			}
+			TI = tmp;
 		}
 	}
 }

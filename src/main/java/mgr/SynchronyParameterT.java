@@ -1,104 +1,219 @@
 package mgr;
 
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 import org.math.plot.Plot3DPanel;
 
-
 public class SynchronyParameterT {
 
-    int ITER;
-    int TIME;
-    double lambda;
+	private int ITER;
+	private double lambda;
 
-    int begN = 10;
-    int endN = 25;
-    int begK = 2;
-    int endK;
-    
-    
-    double[] n_vec = new double[(endN-begN)/2 ];  
-    double[][] T_fun = new double[(endN-begN)/2 + 1][(endN-begK)];
+	private int begN = 10;
+	private int endN = 25;
+	private int begK = 2;
+	private int endK;
+	private int diffEndN = 1;
 
-    public SynchronyParameterT() {
-        this.ITER = Main.ITER;
-        this.TIME = Main.TIME;
-        this.lambda = Main.lambda;
-    }
+	double[] n_axis = new double[endN - begN + 1];
+	double[] k_axis = new double[endN - begK - diffEndN + 1];
+	double[][] T_fun = new double[endN - begN + 1][endN - begK - diffEndN + 1];
 
-    public SynchronyParameterT(int iter, int time) {
-        this.ITER = iter;
-        this.TIME = time;
-    }
+	public SynchronyParameterT() {
+		this.ITER = Main.ITER;
+		this.lambda = Main.lambda;
+		setNKaxes();
+	}
 
-    public SynchronyParameterT(double l) {
-        this.lambda = l;
-        this.ITER = Main.ITER;
-        this.TIME = Main.TIME;
-    }
+	public SynchronyParameterT(int iter, int time) {
+		this.ITER = iter;
+		setNKaxes();
+	}
 
-    public SynchronyParameterT(int iter, int time, double l) {
-        this.lambda = l;
-        this.ITER = iter;
-        this.TIME = time;
-    }
+	public SynchronyParameterT(double l) {
+		this.lambda = l;
+		this.ITER = Main.ITER;
+		setNKaxes();
+	}
 
-    public HashMap<Integer, HashMap<Integer, Double>> processDynamics(){
-    	DynamicsFunctions dynamics = new DynamicsFunctions();
-        HashMap<Integer,HashMap<Integer,Double>> T_fun_map = new HashMap<>();
-        System.out.println("Building ct(k) plot: ITER=" + ITER + " TIME="
-                + TIME);
-        int k = begK;
-        int n = begN;
-        
-        // DYNAMICS
-        while (n <= endN) {
-            System.out.println("For n = " + n);
-            endK = n - 5;
-            
-            k = begK;
-            HashMap<Integer, Double> kMap = new HashMap<>();
-            while (k <= endK && k < n) {
-                System.out.println("For k = " + k);
-                double T = 0;
-                double ct = 0;
-               
-                for (int run = 1; run <= ITER; run++) {
-                    
-                    Net net = new Net(n, k);
-                    int i = 0;
-                    while (i < TIME) {
+	public SynchronyParameterT(int iter, double l) {
+		this.lambda = l;
+		this.ITER = iter;
+		setNKaxes();
+	}
 
-                        dynamics.updateOpinions(dynamics.takeRandomNeighbors(net));
-                        ct = dynamics.countBasicTotalSynchrony(net);
-                        if (ct <= lambda) {
-                            T = T + i/ITER;
-                            break;
-                        }
-                        i++;
-                    }
-                   // T_fun[n_iter][k-begK] = T;
-                }
-              kMap.put(k, T);
-                k++;
-            }
-            T_fun_map.put(n, kMap); 
-            n=n+2;
-           
-        }
-        
-        System.out.println(T_fun_map);
-        return T_fun_map;
-    }
+	public void countTnkMatrix() {
+		DynamicsFunctions dynamics = new DynamicsFunctions();
 
-    
-    public Plot3DPanel createPlot() {
-        System.out.println(n_vec);
-       // System.out.println(k_vec);
-        processDynamics();
-        Plot3DPanel plot = new Plot3DPanel();
-        plot.addGridPlot("T(n,k)", T_fun);
-        return plot;
-    }
+		System.out.println("Building T(n,k) plot: ITER=" + ITER+ " lambda: " + lambda);
+		int k = begK;
+		int n = begN;
 
+		// DYNAMICS
+		while (n <= endN) {
+			System.out.println("For n = " + n);
+			endK = n - diffEndN;
+
+			k = begK;
+
+			while (k <= endK && k < n) {
+				System.out.println("\tFor k = " + k);
+				double T = 0;
+				
+
+				for (int run = 1; run <= ITER; run++) {
+					double ct = lambda + 1;
+					Net net = new Net(n, k);
+					int i = 0;
+					while (ct > lambda && i < 300) {
+						dynamics.updateOpinions(dynamics
+								.takeRandomNeighbors(net));
+						ct = dynamics.countBasicTotalSynchrony(net);
+						i++;
+					}
+					T = T + i - 1;
+				}
+				T_fun[n - begN][k - begK] = T / ITER;
+				k++;
+			}
+			n++;
+
+		}
+	}
+
+	public Plot3DPanel createPlot() {
+		
+		Plot3DPanel plot = new Plot3DPanel();
+		plot.addGridPlot("T(n,k)", T_fun);
+		plot.addLegend("WEST");
+		plot.setAxisLabels("n", "k", "T(n,k)");
+		return plot;
+	}
+	
+	public void printMatrix(double[][] connections) {
+		for (int i = 0; i < connections.length; i++) {
+			System.out.println();
+			System.out.print(i + "    ");
+			for (int j = 0; j < connections[i].length; j++) {
+				System.out.print(connections[i][j] + " ");
+			}
+		}
+		System.out.println();
+	}
+
+	private void setNKaxes() {
+	
+		for (int i = 0; i < n_axis.length; i++) {
+			n_axis[i] = begN + i;
+		}
+		for (int i = 0; i < k_axis.length; i++) {
+			k_axis[i] = begK + i;
+		}
+	}
+
+	public void saveTMatrixToFile() {
+		
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(
+					"/home/natalia/mgr/mgr/src/main/resources/mgr/Tnk_L"
+							+ String.valueOf((int) lambda) + ".txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < n_axis.length; i++) {
+			if (i != n_axis.length - 1) {
+				writer.print((int) n_axis[i] + " ");
+			} else {
+				writer.print((int) n_axis[i] + "\n");
+			}
+		}
+		for (int i = 0; i < k_axis.length; i++) {
+			if (i != k_axis.length - 1) {
+				writer.print((int) k_axis[i] + " ");
+			} else {
+				writer.print((int) k_axis[i] + "\n");
+			}
+		}
+		writer.println();
+
+		for (int i = 0; i < T_fun.length; i++) {
+			for (int j = 0; j < T_fun[0].length; j++) {
+				if (j != T_fun[0].length - 1) {
+					writer.print(T_fun[i][j] + " ");
+				} else {
+					writer.print(T_fun[i][j]);
+				}
+			}
+			if (i < T_fun.length - 1) {
+				writer.println();
+			}
+		}
+		writer.close();
+
+	}
+
+	public void readTnkFromFile(int lambda) throws IOException {
+		InputStream in = getClass().getResourceAsStream(
+				"Tnk_L" + String.valueOf(lambda) + ".txt");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		int i = 0;
+		String[] naa = reader.readLine().split(" ");
+		begN = Integer.valueOf(naa[0]);
+		endN = Integer.valueOf(naa[naa.length - 1]);
+		n_axis = new double[endN - begN + 1];
+		for (String na : naa) {
+			n_axis[i] = Double.valueOf(na);
+			i++;
+		}
+		i = 0;
+		String[] kaa = reader.readLine().split(" ");
+		begK = Integer.valueOf(kaa[0]);
+		diffEndN = endN - Integer.valueOf(kaa[kaa.length - 1]);
+		k_axis = new double[endN - begK - diffEndN + 1];
+		T_fun = new double[endN - begN + 1][endN - begK - diffEndN + 1];
+
+		for (String na : kaa) {
+			k_axis[i] = Double.valueOf(na);
+			i++;
+		}
+		reader.readLine();
+		int n = 0;
+
+		String lineS;
+		while ((lineS = reader.readLine()) != null) {
+			int k = 0;
+			String[] line = lineS.split(" ");
+			if (line.length < 2)
+				break;
+			for (String num : line) {
+				T_fun[n][k] = Double.valueOf(num);
+				k++;
+			}
+			n++;
+		}
+
+	}
+
+	public void deleteFirstColumn() {
+		begK = begK - 1;
+		double[] k_axisTemp = new double[endN - begK - diffEndN + 1];
+		for (int i = 1; i < k_axis.length; i++) {
+			k_axisTemp[i - 1] = k_axis[i];
+		}
+		k_axis = k_axisTemp;
+
+		double[][] temp = new double[T_fun.length][T_fun[0].length - 1];
+		for (int i = 0; i < T_fun.length; i++) {
+			for (int j = 1; j < T_fun[0].length; j++) {
+				temp[i][j - 1] = T_fun[i][j];
+			}
+		}
+		T_fun = temp;
+	}
 }
