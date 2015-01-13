@@ -13,7 +13,7 @@ import org.math.plot.Plot2DPanel;
 
 public class Main {
 
-    static int ITER = 1000;
+    static int ITER = 50;
     static int TIME = 200;
     static double lambda = 60;
 

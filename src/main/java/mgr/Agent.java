@@ -13,6 +13,9 @@ public class Agent {
     public Agent(int vertex) {
         Random gen = new Random();
         this.opinion = gen.nextDouble() * 360;
+        if(this.opinion>360 || this.opinion < 0){
+        	throw new IllegalArgumentException();
+        }
         this.vertex = vertex;
     }
 
@@ -26,7 +29,7 @@ public class Agent {
 
     public void countWeight(
             Net net) {
-        weight = Math.pow((1.0 / (((int) net.distanceBM.get(vertex)) + 1.0)), net.steepness);
+        weight = Math.pow((1.0 / (net.distanceBM.get(vertex).doubleValue() + 1.0)), net.steepness);
     }
   
     public int getVertex() {
