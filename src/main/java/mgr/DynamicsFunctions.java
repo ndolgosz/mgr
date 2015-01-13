@@ -52,41 +52,39 @@ public class DynamicsFunctions {
         }
     }
 
-    public void updateOpinions_InformationModel(int TI, int BM, Net net, Agent[] agents) {
+    public void updateOpinions_InformationModel(Net net,
+            Agent[] agents) {
 
+        int TI = net.TI;
+      
         Agent agent1 = agents[0];
         Agent agent2 = agents[1];
         double diff = agent1.getOpinion() - agent2.getOpinion();
         double s1 = agent1.getWeight();
         double s2 = agent1.getWeight();
         double f;
-        if (agent1.getVertex() == TI){ 
+        if (agent1.getVertex() == TI) {
             f = agent1.getOpinion();
-        } 
-        else if(agent2.getVertex() == TI){
-            f = agent2.getOpinion();            
+        } else if (agent2.getVertex() == TI) {
+            f = agent2.getOpinion();
+        } else if (diff <= 180 && diff >= 0) {
+            f = agent1.getOpinion() - (s2 / (s1 + s2) * diff);
+        } else if (diff > 180) {
+            f = agent1.getOpinion() - (s2 / (s1 + s2) * (diff - 360));
+        } else if (diff >= -180 && diff <= 0) {
+            f = agent1.getOpinion() + (s2 / (s1 + s2) * diff);
+        } else {
+            f = agent1.getOpinion() + (s2 / (s1 + s2) * (diff + 360));
         }
-        else if(diff <= 180 && diff >= 0){
-            f = agent1.getOpinion() - (s2/(s1 + s2)*diff);
-        }
-        else if(diff > 180){
-            f = agent1.getOpinion() - (s2/(s1 + s2)*(diff - 360));
-        }
-        else if(diff >= -180 && diff <= 0){
-            f = agent1.getOpinion() + (s2/(s1 + s2)*diff);
-        }
-        else {
-            f = agent1.getOpinion() + (s2/(s1 + s2)*(diff + 360));
-        }
-        
+
         if (f >= 0) {
             agent1.setOpinion(f);
             agent2.setOpinion(f);
         } else {
             agent1.setOpinion(f + 360);
             agent2.setOpinion(f + 360);
-        }      
-        
+        }
+
     }
 
     public double countBasicTotalSynchrony(Net net) {
@@ -104,6 +102,17 @@ public class DynamicsFunctions {
         }
 
         ct = ct / ((net.numVertices) * (net.numVertices - 1));
+        return ct;
+    }
+
+    public double countTotalSynchrony(Net net) {
+        double tiOp = net.agentsVertices.get(net.TI).getOpinion();
+        double ct = 0;
+        for (int i = 1; i <= net.numVertices; i++) {
+            double iOp = net.agentsVertices.get(i).getOpinion();
+            ct = ct + Math.abs(iOp - tiOp);
+        }
+        ct = ct / (net.numVertices);
         return ct;
     }
 
@@ -142,8 +151,32 @@ public class DynamicsFunctions {
                 - (tau * T_nk(n, k, Tnk, n_axis, k_axis) / n);
     }
 
-    public int[] optimalGroup(double[][] Tnk, int t, double[] n_axis,
+    public int[] optimalGroup_n_k(double[][] Tnk, int t, double[] n_axis,
             double[] k_axis, double kappa, double tau) {
+        int diff = (int) (n_axis[n_axis.length - 1] - k_axis[k_axis.length - 1]);
+
+        double maxB = 0;
+        int[] optimum = new int[2];
+        for (int i = 0; i < Tnk.length; i++) {
+            for (int j = 0; j < k_axis.length; j++) {
+                if (k_axis[j] <= n_axis[i] - diff) {
+                    double bnk = B_nk((int) n_axis[i], (int) k_axis[j], Tnk, t,
+                            n_axis, k_axis, kappa, tau);
+                    if (maxB < bnk) {
+                        maxB = bnk;
+                        optimum[0] = (int) n_axis[i];
+                        optimum[1] = (int) k_axis[j];
+                    }
+                }
+            }
+        }
+        return optimum;
+    }
+    
+    public int[] optimalGroup_steep_k(double[][] Tnk, int t, double[] n_axis,
+            double[] k_axis, double kappa, double tau) {
+        
+        int n_opt = 19;
         int diff = (int) (n_axis[n_axis.length - 1] - k_axis[k_axis.length - 1]);
 
         double maxB = 0;
@@ -172,7 +205,7 @@ public class DynamicsFunctions {
         double[] kappa_vec = new double[100];
         int i = 0;
         for (double kappa = 0; kappa <= 0.0005; kappa = kappa + 0.000005) {
-            int[] pair = optimalGroup(Tnk, 300, n_axis, k_axis, kappa, 0.00001);
+            int[] pair = optimalGroup_n_k(Tnk, 300, n_axis, k_axis, kappa, 0.00001);
             n1[i] = (double) pair[0];
             k1[i] = (double) pair[1];
             kappa_vec[i] = kappa;
@@ -183,7 +216,7 @@ public class DynamicsFunctions {
         double[] tau_vec = new double[100];
         i = 0;
         for (double tau = 0; tau <= 0.001; tau = tau + 0.00001) {
-            int[] pair = optimalGroup(Tnk, 300, n_axis, k_axis, 0.0001, tau);
+            int[] pair = optimalGroup_n_k(Tnk, 300, n_axis, k_axis, 0.0001, tau);
             n2[i] = (double) pair[0];
             k2[i] = (double) pair[1];
             tau_vec[i] = tau;

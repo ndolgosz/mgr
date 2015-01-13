@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 
 import org.math.plot.Plot3DPanel;
 
-public class SynchronyParameterT {
+public class T_n_k_table {
 
 	private int ITER;
 	private double lambda;
@@ -24,24 +24,24 @@ public class SynchronyParameterT {
 	double[] k_axis = new double[endN - begK - diffEndN + 1];
 	double[][] T_fun = new double[endN - begN + 1][endN - begK - diffEndN + 1];
 
-	public SynchronyParameterT() {
+	public T_n_k_table() {
 		this.ITER = Main.ITER;
 		this.lambda = Main.lambda;
 		setNKaxes();
 	}
 
-	public SynchronyParameterT(int iter, int time) {
+	public T_n_k_table(int iter, int time) {
 		this.ITER = iter;
 		setNKaxes();
 	}
 
-	public SynchronyParameterT(double l) {
+	public T_n_k_table(double l) {
 		this.lambda = l;
 		this.ITER = Main.ITER;
 		setNKaxes();
 	}
 
-	public SynchronyParameterT(int iter, double l) {
+	public T_n_k_table(int iter, double l) {
 		this.lambda = l;
 		this.ITER = iter;
 		setNKaxes();

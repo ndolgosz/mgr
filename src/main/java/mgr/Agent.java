@@ -2,7 +2,7 @@ package mgr;
 
 import java.util.Random;
 
-import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import edu.uci.ics.jung.algorithms.shortestpath.UnweightedShortestPath;
 
 public class Agent {
 
@@ -24,12 +24,9 @@ public class Agent {
         opinion = op;
     }
 
-    public void countWeight(int BM,
+    public void countWeight(
             Net net) {
-        DijkstraShortestPath<Integer, String> path = new DijkstraShortestPath<>(
-                net.net);
-        double d = (double) path.getDistance(BM, vertex);
-        weight = Math.pow((1.0 / (d + 1.0)), net.steepness);
+        weight = Math.pow((1.0 / (((int) net.distanceBM.get(vertex)) + 1.0)), net.steepness);
     }
   
     public int getVertex() {

@@ -3,8 +3,11 @@ package mgr;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
+import edu.uci.ics.jung.algorithms.cluster.WeakComponentClusterer;
+import edu.uci.ics.jung.algorithms.shortestpath.UnweightedShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
@@ -16,6 +19,7 @@ public class Net {
     public int TI;
     public double steepness;
     HashMap<Integer, Agent> agentsVertices;
+    Map<Integer, Number> distanceBM;
     Graph<Integer, String> net;
 
     public Net(int n, int k) {
@@ -24,20 +28,27 @@ public class Net {
         this.numVertices = n;
         this.numEdges = k;
         updateGraph();
-        Random r = new Random();
-        BM = r.nextInt(numVertices) + 1;
+
     }
 
-    public Net(int n, int k, double steep) {
+    public Net(int n, int k, double steep, double prob) {
 
         this.steepness = steep;
         agentsVertices = new HashMap<Integer, Agent>();
         this.numVertices = n;
         this.numEdges = k;
         updateGraph();
-        Random r = new Random();
-        BM = r.nextInt(numVertices) + 1;
+        while (new WeakComponentClusterer<Integer, String>().transform(net)
+                .size() != 1) {
+            updateGraph();
+        }
+        chooseBM();
+        UnweightedShortestPath<Integer, String> path = new UnweightedShortestPath<>(
+                net);
+        distanceBM = path.getDistanceMap(BM);
+        chooseTI(prob);
         setWeightsToEveryAgent();
+
     }
 
     private void updateGraph() {
@@ -128,11 +139,11 @@ public class Net {
 
     private void setWeightsToEveryAgent() {
         for (int j = 1; j <= numVertices; j++) {
-            agentsVertices.get(j).countWeight(BM, this);
+            agentsVertices.get(j).countWeight(this);
         }
     }
 
-    public void chooseTI(double probability) {
+    private void chooseTI(double probability) {
         Random r = new Random();
         double d = r.nextDouble();
         if (d < probability) {
@@ -144,5 +155,10 @@ public class Net {
             }
             TI = tmp;
         }
+    }
+
+    private void chooseBM() {
+        Random r = new Random();
+        BM = r.nextInt(numVertices) + 1;
     }
 }
