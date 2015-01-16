@@ -51,7 +51,7 @@ public class T_steep_k_table {
 		setNKaxes();
 	}
 
-	public void countTnkMatrix() {
+	public void countTsteepkMatrix() {
 		DynamicsFunctions dynamics = new DynamicsFunctions();
 
 		System.out.println("Building T(steep,k) plot: ITER=" + ITER

@@ -13,21 +13,20 @@ import org.math.plot.Plot2DPanel;
 
 public class Main {
 
-    static int ITER = 50;
+    static int ITER = 1000;
     static int TIME = 200;
     static double lambda = 60;
 
     public static void main(String[] args) {
 
         System.out.println("Start! ct(t,n)");
-        DynamicsFunctions dyn = new DynamicsFunctions();
+        //DynamicsFunctions dyn = new DynamicsFunctions();
         
         T_steep_k_table T = new T_steep_k_table();
-        T.countTnkMatrix();
+        T.countTsteepkMatrix();
         try {
             T.saveTMatrixToFile();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
        
