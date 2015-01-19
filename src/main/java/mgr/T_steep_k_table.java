@@ -14,19 +14,19 @@ import org.math.plot.Plot3DPanel;
 public class T_steep_k_table {
 
 	private int ITER;
-	private double prob = 1.0;
+	private double prob;
 	private double lambda;
 	private final static int n_opt = 19;
-	private int begSteep = 10;
-	private int endSteep = 25;
+	private int begSteep = 1;
+	private int endSteep = 10;
 	private int begK = 2;
 	private int diffEndN = 1;
 	private int endK = n_opt - diffEndN;
 
-	double[] steep_axis = new double[endSteep - begSteep + 1];
-	double[] k_axis = new double[endSteep - begK - diffEndN + 1];
-	double[][] T_fun = new double[endSteep - begSteep + 1][endSteep - begK
-			- diffEndN + 1];
+	double[] steep_axis = new double[10];
+	double[] k_axis = new double[n_opt - begK - diffEndN + 1];
+	double[][] T_fun = new double[endSteep - begSteep +1][endK - begK
+			 + 1];
 
 	public T_steep_k_table() {
 		this.ITER = Main.ITER;
@@ -34,20 +34,13 @@ public class T_steep_k_table {
 		setNKaxes();
 	}
 
-	public T_steep_k_table(int iter, int time) {
-		this.ITER = iter;
-		setNKaxes();
-	}
 
-	public T_steep_k_table(double l) {
-		this.lambda = l;
-		this.ITER = Main.ITER;
-		setNKaxes();
-	}
+	
 
-	public T_steep_k_table(int iter, double l) {
-		this.lambda = l;
-		this.ITER = iter;
+	public T_steep_k_table(double prob) {
+	    this.ITER = Main.ITER;
+		this.lambda = Main.lambda;
+		this.prob = prob;
 		setNKaxes();
 	}
 
@@ -71,10 +64,7 @@ public class T_steep_k_table {
 
 				for (int run = 1; run <= ITER; run++) {
 					double ct = lambda + 1;
-					Net net = new Net(n_opt, k, steep, prob);
-					if (net.TI != net.BM) {
-						System.out.println("blad");
-					}
+					Net net = new Net(n_opt, k, steep, prob);				
 
 					int i = 0;
 					while (ct > lambda && i < 300) {
@@ -95,9 +85,9 @@ public class T_steep_k_table {
 
 	public Plot3DPanel createPlot() {
 
-		Plot3DPanel plot = new Plot3DPanel();
-		plot.addGridPlot("T(n,k)", T_fun);
-		plot.setAxisLabels("steepness", "k", "T(steep,k)");
+	    Plot3DPanel plot = new Plot3DPanel();
+        plot.addGridPlot("T(n,k)", k_axis, steep_axis, T_fun);
+        plot.setAxisLabels("k", "steepness", "T(steepness,k)");
 		return plot;
 	}
 
@@ -163,9 +153,9 @@ public class T_steep_k_table {
 
 	}
 
-	public void readTnkFromFile(int lambda) throws IOException {
+	public void readTnkFromFile(int lambda, double prob) throws IOException {
 		InputStream in = getClass().getResourceAsStream(
-				"Tsteepk_L" + String.valueOf(lambda) + ".txt");
+				"Tsteepk_L" + String.valueOf(lambda) + "_" + String.valueOf(prob) + ".txt");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int i = 0;
 		String[] naa = reader.readLine().split(" ");
@@ -179,10 +169,9 @@ public class T_steep_k_table {
 		i = 0;
 		String[] kaa = reader.readLine().split(" ");
 		begK = Integer.valueOf(kaa[0]);
-		diffEndN = endSteep - Integer.valueOf(kaa[kaa.length - 1]);
-		k_axis = new double[endSteep - begK - diffEndN + 1];
-		T_fun = new double[endSteep - begSteep + 1][endSteep - begK - diffEndN
-				+ 1];
+		endK = Integer.valueOf(kaa[kaa.length - 1]);
+		k_axis = new double[endK - begK + 1];
+		T_fun = new double[endSteep - begSteep + 1][endK - begK + 1];
 
 		for (String na : kaa) {
 			k_axis[i] = Double.valueOf(na);

@@ -89,9 +89,8 @@ public class T_n_k_table {
 	public Plot3DPanel createPlot() {
 		
 		Plot3DPanel plot = new Plot3DPanel();
-		plot.addGridPlot("T(n,k)", T_fun);
-		plot.addLegend("WEST");
-		plot.setAxisLabels("n", "k", "T(n,k)");
+		plot.addGridPlot("T(n,k)", k_axis, n_axis, T_fun);
+		plot.setAxisLabels("k", "n", "T(n,k)");
 		return plot;
 	}
 	
@@ -121,7 +120,7 @@ public class T_n_k_table {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(
-					"/home/natalia/mgr/mgr/src/main/resources/mgr/Tnk_L"
+					"/home/n.dolgoszyja/mgr/src/main/resources/mgr/Tnk_L"
 							+ String.valueOf((int) lambda) + ".txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

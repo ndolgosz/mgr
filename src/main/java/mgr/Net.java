@@ -28,6 +28,10 @@ public class Net {
         this.numVertices = n;
         this.numEdges = k;
         updateGraph();
+        while (new WeakComponentClusterer<Integer, String>().transform(net)
+                .size() != 1) {
+            updateGraph();
+        }
 
     }
 
