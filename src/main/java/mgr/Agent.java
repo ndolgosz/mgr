@@ -2,7 +2,6 @@ package mgr;
 
 import java.util.Random;
 
-import edu.uci.ics.jung.algorithms.shortestpath.UnweightedShortestPath;
 
 public class Agent {
 
@@ -13,7 +12,7 @@ public class Agent {
     public Agent(int vertex) {
         Random gen = new Random();
         this.opinion = gen.nextDouble() * 360;
-        if(this.opinion>360 || this.opinion < 0){
+        if(this.opinion >= 360 || this.opinion < 0){
         	throw new IllegalArgumentException();
         }
         this.vertex = vertex;

@@ -31,13 +31,14 @@ public class PlotCt_N {
             double [] ct = new double[TIME];
             ct[0] = 0;
             for (int run = 1; run <= ITER; run++) {
-                Net net = new Net(n, k);
+                Net net = new Net(n, k, 1 , 1);
                 int i = 0;
 
                 while (i < TIME) {
-
-                	dynamics.updateOpinions_BasicModel(dynamics.takeRandomNeighbors(net));
-                    ct[i] = ct[i] + dynamics.countBasicTotalSynchrony(net) / ITER;
+                	dynamics.updateOpinions_InformationModel(net,dynamics.takeRandomNeighbors(net));
+                	ct[i] = ct[i] + dynamics.countTotalSynchrony(net) / ITER;
+                	//	dynamics.updateOpinions_BasicModel(dynamics.takeRandomNeighbors(net));
+                 //   ct[i] = ct[i] + dynamics.countBasicTotalSynchrony(net) / ITER;
                     if(run == 1) t[i] = i;
                     i++;
                 }

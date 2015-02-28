@@ -15,8 +15,8 @@ public class Net {
 
     int numVertices;
     int numEdges;
-    public int BM;
-    public int TI;
+    public int BM = -1;
+    public int TI = -1;
     public double steepness;
     HashMap<Integer, Agent> agentsVertices;
     Map<Integer, Number> distanceBM;
@@ -55,7 +55,7 @@ public class Net {
 
     }
 
-    private void updateGraph() {
+	private void updateGraph() {
 
         net = new UndirectedSparseGraph<Integer, String>();
 
@@ -63,8 +63,6 @@ public class Net {
             net.addVertex(i);
             agentsVertices.put(i, new Agent(i));
         }
-        // if (net.getVertexCount() == numVertices)
-        // System.out.println("Vertex adding - completed!");
         Integer[][] connections = randomConnectionsMatrix();
         int edge = 0;
         for (int i = 0; i < numVertices; i++) {
@@ -123,7 +121,7 @@ public class Net {
     }
 
     private Integer[][] randomConnectionsMatrix() {
-        // List<Integer> listAll = createIntegersVector(1, numEdges);
+       
         Integer totalCon[][] = createZerosMatrix();
         for (int i = 0; i < numVertices; i++) {
             // printMatrixConnection(totalCon);
@@ -153,7 +151,7 @@ public class Net {
         if (d < probability) {
             TI = BM;
         } else {
-            int tmp = BM;
+            int tmp = r.nextInt(numVertices) + 1;;
             while (tmp == BM) {
                 tmp = r.nextInt(numVertices) + 1;
             }
@@ -165,4 +163,5 @@ public class Net {
         Random r = new Random();
         BM = r.nextInt(numVertices) + 1;
     }
+    
 }

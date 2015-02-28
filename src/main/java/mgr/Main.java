@@ -12,46 +12,65 @@ import org.math.plot.Plot2DPanel;
 
 public class Main {
 
-    static int ITER = 2000;
-    static int TIME = 200;
-    static double lambda = 50;
+	static int ITER = 1000;
+	static int TIME = 200;
+	static double lambda = 70;
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        System.out.println("Start! ct(t,n)");
-        //DynamicsFunctions dyn = new DynamicsFunctions();
-        for (double prob = 0.0; prob <= 1.0; prob = prob + 0.2) {
-            T_steep_k_table T = new T_steep_k_table(prob);
-            T.countTsteepkMatrix();
-            try {
-                T.saveTMatrixToFile();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+		System.out.println("Start! ct(t,n)");
+		
 
-        /*
-         * int[] pair = dyn.optimalGroup_n_k(T.T_fun, 1000, T.n_axis, T.k_axis,
-         * 0.0001, 0.00001); System.out.println("n*: " + pair[0] + " k*: " +
-         * pair[1]);
-         * 
-         * int[] pair2 = dyn.optimalGroup_steep_k(T2.T_fun, 1000, T2.steep_axis,
-         * T2.k_axis, 0.0001, 0.00001); System.out.println("steep*: " + pair2[0]
-         * + " k*: " + pair2[1]);
-         */
+		
+		for (double prob = 0.0; prob <= 1.0; prob += 1.0) {
+			T_steep_k_table T = new T_steep_k_table(prob);
+			T.countTsteepkMatrix();
+			try {
+				T.saveTMatrixToFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 
-        /*
-         * // BUILDING JFRAME
-         * 
-         * JFrame frame = new JFrame("a plot panel");
-         * 
-         * frame.setLayout(new GridLayout(1, 2)); Plot2DPanel[] plots =
-         * dyn.optimalGroup_kappa_tau(T.T_fun, 300, T.n_axis, T.k_axis);
-         * 
-         * frame.add(plots[0]); frame.add(plots[1]);
-         * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         * frame.setVisible(true); frame.setSize(1000, 500);
-         * System.out.println("End!");
-         */
-    }
+		/*	double[] pair2 = dyn.optimalGroup_steep_k(T.T_fun, T.steep_axis,
+					T.k_axis, 0.1, 0.1);
+			System.out.println("prob: " + prob + " steep*: " + pair2[0]
+					+ " k*: " + pair2[1]);
+			i++;
+		}
+*/
+	/*	T_steep_k_table T1 = new T_steep_k_table();
+		
+			try {
+				T1.readTnkFromFile(70, 1.0);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			T_steep_k_table T0 = new T_steep_k_table();
+			
+			try {
+				T0.readTnkFromFile(50, 0.0);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		JFrame frame = new JFrame("a plot panel");
+		//frame.setContentPane(T.createPlot());
+		frame.setLayout(new GridLayout(1, 2));
+		//Plot2DPanel[] plots =
+		// dyn.optimalGroup_kappa_tau(T.T_fun, T.n_axis, T.k_axis);
+
+		frame.add(T1.createPlot());
+		frame.add(T0.createPlot());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		frame.setSize(1000, 500);
+		System.out.println("End!");
+*/
+	}
 }

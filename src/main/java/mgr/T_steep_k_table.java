@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
+
 
 import org.math.plot.Plot3DPanel;
 
@@ -16,17 +15,17 @@ public class T_steep_k_table {
 	private int ITER;
 	private double prob;
 	private double lambda;
-	private final static int n_opt = 19;
-	private int begSteep = 1;
-	private int endSteep = 10;
+	private final static int n_opt = 20;
+	private double begSteep = 0.0;
+	private double endSteep = 3.0;
 	private int begK = 2;
-	private int diffEndN = 1;
-	private int endK = n_opt - diffEndN;
+	private double diff = 0.2;
+	private int endK = n_opt - 1;
 
-	double[] steep_axis = new double[10];
-	double[] k_axis = new double[n_opt - begK - diffEndN + 1];
-	double[][] T_fun = new double[endSteep - begSteep +1][endK - begK
-			 + 1];
+	double[] steep_axis = new double[(int) ((endSteep - begSteep)/diff + 1)];
+	double[] k_axis = new double[endK - begK + 1];
+	double[][] T_fun = new double[endK - begK
+			 + 1][(int) ((endSteep - begSteep)/diff + 1)];
 
 	public T_steep_k_table() {
 		this.ITER = Main.ITER;
@@ -50,16 +49,16 @@ public class T_steep_k_table {
 		System.out.println("Building T(steep,k) plot: ITER=" + ITER
 				+ " lambda: " + lambda);
 		int k = begK;
-		int steep = begSteep;
+		double steep = begSteep;
+		int steep_iter = 0;
 
 		// DYNAMICS
-		while (steep <= endSteep) {
+		while (steep <= endSteep + diff/2) {
 			System.out.println("For steepness = " + steep);
 
 			k = begK;
-
 			while (k <= endK) {
-				System.out.println("\tFor k = " + k);
+				//System.out.println("\tFor k = " + k);
 				double T = 0;
 
 				for (int run = 1; run <= ITER; run++) {
@@ -67,18 +66,21 @@ public class T_steep_k_table {
 					Net net = new Net(n_opt, k, steep, prob);				
 
 					int i = 0;
-					while (ct > lambda && i < 300) {
+					while (ct > lambda && i < 800) {
 						dynamics.updateOpinions_InformationModel(net,
 								dynamics.takeRandomNeighbors(net));
 						ct = dynamics.countTotalSynchrony(net);
+						//System.out.println(i + " : " +ct);
+						
 						i++;
 					}
 					T = T + i - 1;
 				}
-				T_fun[steep - begSteep][k - begK] = T / ITER;
+				T_fun[k - begK][steep_iter] = T / ITER;
 				k++;
 			}
-			steep++;
+			steep = steep + diff;
+			steep_iter++;
 
 		}
 	}
@@ -86,8 +88,8 @@ public class T_steep_k_table {
 	public Plot3DPanel createPlot() {
 
 	    Plot3DPanel plot = new Plot3DPanel();
-        plot.addGridPlot("T(n,k)", k_axis, steep_axis, T_fun);
-        plot.setAxisLabels("k", "steepness", "T(steepness,k)");
+        plot.addGridPlot("T(n,k)", steep_axis,k_axis, T_fun);
+        plot.setAxisLabels("steepness","k", "T(steepness,k)");
 		return plot;
 	}
 
@@ -103,9 +105,9 @@ public class T_steep_k_table {
 	}
 
 	private void setNKaxes() {
-
-		for (int i = 0; i < steep_axis.length; i++) {
-			steep_axis[i] = begSteep + i;
+		steep_axis[0] = begSteep;
+		for (int i = 1; i < steep_axis.length; i++) {
+			steep_axis[i] = steep_axis[i-1] + diff;
 		}
 		for (int i = 0; i < k_axis.length; i++) {
 			k_axis[i] = begK + i;
@@ -117,15 +119,15 @@ public class T_steep_k_table {
 		PrintWriter writer = null;
 
 		writer = new PrintWriter(
-				"/home/n.dolgoszyja/mgr/src/main/resources/mgr/Tsteepk_L"
+				"/home/natalia/mgr/mgr/src/main/resources/mgr/Tsteepk_L"
 						+ String.valueOf((int) lambda) + "_"
 						+ String.valueOf(prob) + ".txt");
 
 		for (int i = 0; i < steep_axis.length; i++) {
 			if (i != steep_axis.length - 1) {
-				writer.print((int) steep_axis[i] + " ");
+				writer.print(steep_axis[i] + " ");
 			} else {
-				writer.print((int) steep_axis[i] + "\n");
+				writer.print(steep_axis[i] + "\n");
 			}
 		}
 		for (int i = 0; i < k_axis.length; i++) {
@@ -159,11 +161,11 @@ public class T_steep_k_table {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int i = 0;
 		String[] naa = reader.readLine().split(" ");
-		begSteep = Integer.valueOf(naa[0]);
-		endSteep = Integer.valueOf(naa[naa.length - 1]);
-		steep_axis = new double[endSteep - begSteep + 1];
+		begSteep = Double.valueOf(naa[0]);
+		endSteep = Double.valueOf(naa[naa.length - 1]);
+		steep_axis = new double[(int) ((endSteep - begSteep)/diff + 1)];
 		for (String na : naa) {
-			steep_axis[i] = Double.valueOf(na);
+			steep_axis[i] = Double.valueOf(na);	
 			i++;
 		}
 		i = 0;
@@ -171,44 +173,35 @@ public class T_steep_k_table {
 		begK = Integer.valueOf(kaa[0]);
 		endK = Integer.valueOf(kaa[kaa.length - 1]);
 		k_axis = new double[endK - begK + 1];
-		T_fun = new double[endSteep - begSteep + 1][endK - begK + 1];
+		T_fun = new double[endK - begK + 1][(int) ((endSteep - begSteep)/diff + 1)];
 
 		for (String na : kaa) {
 			k_axis[i] = Double.valueOf(na);
 			i++;
 		}
 		reader.readLine();
-		int steep = 0;
+		int k = 0;
 
 		String lineS;
 		while ((lineS = reader.readLine()) != null) {
-			int k = 0;
+			int steep = 0;
 			String[] line = lineS.split(" ");
 			if (line.length < 2)
 				break;
 			for (String num : line) {
-				T_fun[steep][k] = Double.valueOf(num);
-				k++;
+				T_fun[k][steep] = Double.valueOf(num);
+				steep++;
 			}
-			steep++;
+			k++;
 		}
 
 	}
-
-	public void deleteFirstColumn() {
-		begK = begK - 1;
-		double[] k_axisTemp = new double[endSteep - begK - diffEndN + 1];
-		for (int i = 1; i < k_axis.length; i++) {
-			k_axisTemp[i - 1] = k_axis[i];
+	
+	private boolean checkIfSystemIsSynchronizing(double oldCw, double newCw){
+		
+		if(newCw < oldCw){
+			return true;
 		}
-		k_axis = k_axisTemp;
-
-		double[][] temp = new double[T_fun.length][T_fun[0].length - 1];
-		for (int i = 0; i < T_fun.length; i++) {
-			for (int j = 1; j < T_fun[0].length; j++) {
-				temp[i][j - 1] = T_fun[i][j];
-			}
-		}
-		T_fun = temp;
+		return false;
 	}
 }
