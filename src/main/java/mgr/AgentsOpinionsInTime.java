@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-public class AgentsOpinionTable {
+public class AgentsOpinionsInTime {
 
 	static int ITER = 1000;
 	static double prob = 0.0;

@@ -1,6 +1,6 @@
-package mgr;
+package tables;
 
-import java.awt.GridLayout;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
@@ -10,15 +10,27 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-public class Main {
+public class CountTablesT_sk {
 
-	static int ITER = 1000;
-	static int TIME = 200;
 	static double lambda = 70;
 
 	public static void main(String[] args) {
 
 		System.out.println("Start! ct(t,n)");
+			
+		for (double prob = 0.0; prob <= 1.0; prob += 1.0) {
+			System.out.println("/tprobability = "+prob);
+			
+			T_steep_k_table T = new T_steep_k_table(prob);
+			T.countTsteepkMatrix();
+			try {
+				T.saveTMatrixToFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 
 		/*	double[] pair2 = dyn.optimalGroup_steep_k(T.T_fun, T.steep_axis,
 					T.k_axis, 0.1, 0.1);

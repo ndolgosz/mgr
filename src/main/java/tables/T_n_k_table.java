@@ -1,4 +1,4 @@
-package mgr;
+package tables;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -7,11 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import mgr.DynamicsFunctions;
+import mgr.Net;
+
 import org.math.plot.Plot3DPanel;
 
 public class T_n_k_table {
 
-	private int ITER;
+	private static final int ITER = 500;
 	private double lambda;
 
 	private int begN = 10;
@@ -20,30 +23,12 @@ public class T_n_k_table {
 	private int endK;
 	private int diffEndN = 1;
 
-	double[] n_axis = new double[endN - begN + 1];
-	double[] k_axis = new double[endN - begK - diffEndN + 1];
-	double[][] T_fun = new double[endN - begN + 1][endN - begK - diffEndN + 1];
-
-	public T_n_k_table() {
-		this.ITER = Main.ITER;
-		this.lambda = Main.lambda;
-		setNKaxes();
-	}
-
-	public T_n_k_table(int iter, int time) {
-		this.ITER = iter;
-		setNKaxes();
-	}
+	public double[] n_axis = new double[endN - begN + 1];
+	public double[] k_axis = new double[endN - begK - diffEndN + 1];
+	public double[][] T_fun = new double[endN - begN + 1][endN - begK - diffEndN + 1];
 
 	public T_n_k_table(double l) {
-		this.lambda = l;
-		this.ITER = Main.ITER;
-		setNKaxes();
-	}
-
-	public T_n_k_table(int iter, double l) {
-		this.lambda = l;
-		this.ITER = iter;
+		this.lambda = l;	
 		setNKaxes();
 	}
 

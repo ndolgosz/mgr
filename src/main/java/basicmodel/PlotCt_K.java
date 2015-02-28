@@ -1,4 +1,7 @@
-package mgr;
+package basicmodel;
+
+import mgr.DynamicsFunctions;
+import mgr.Net;
 
 import org.math.plot.Plot2DPanel;
 
@@ -9,13 +12,13 @@ public class PlotCt_K {
 
     int endK = 19;
     int begK = 3;
-    int n = 20;
-
-    public PlotCt_K() {
-        this.ITER = Main.ITER;
-        this.TIME = Main.TIME;
-    }
-
+    int n = 20; 
+    
+    /**
+     * Function plots synchrony parameter with time
+     * @param iter - number of runs
+     * @param time
+     */
     public PlotCt_K(int iter, int time) {
         this.ITER = iter;
         this.TIME = time;

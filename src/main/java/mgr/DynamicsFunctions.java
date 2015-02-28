@@ -7,10 +7,6 @@ import org.math.plot.Plot2DPanel;
 
 public class DynamicsFunctions {
 
-	public Agent takeRandomAgent(Net net) {
-		Random r = new Random();
-		return net.agentsVertices.get(r.nextInt(net.numVertices) + 1);
-	}
 
 	public Agent[] takeRandomNeighbors(Net net) {
 		Random r = new Random();
@@ -25,7 +21,7 @@ public class DynamicsFunctions {
 		return agents;
 	}
 
-	public int randomAgent(Net net) {
+	private int randomAgent(Net net) {
 		Random r = new Random();
 		int i = r.nextInt(net.numVertices) + 1;
 
@@ -124,7 +120,7 @@ public class DynamicsFunctions {
 		return ct;
 	}
 
-	public double T_nk(double n, int k, double[][] Tnk, double[] n_axis,
+	private double T_nk(double n, int k, double[][] Tnk, double[] n_axis,
 			double[] k_axis) {
 		int nInd = -1;
 		int kInd = -1;
@@ -145,20 +141,20 @@ public class DynamicsFunctions {
 		return Tnk[nInd][kInd];
 	}
 
-	public double H_nk(double n) {
+	private double H_nk(double n) {
 		double alpha = 0.5;
 		double beta = 15;
 
 		return 1.0 / (1.0 + Math.exp(alpha * beta - alpha * n));
 	}
 
-	public double B_nk(double n, int k, double[][] Tnk, double[] n_axis,
+	private double B_nk(double n, int k, double[][] Tnk, double[] n_axis,
 			double[] k_axis, double kappa, double tau) {
 		return (H_nk(n) / n) - (kappa * k)
 				- (tau * T_nk(n, k, Tnk, n_axis, k_axis) / n);
 	}
 
-	public double B_steepk(int n, double steep, int k, double[][] Tnk,
+	private double B_steepk(int n, double steep, int k, double[][] Tnk,
 			double[] steep_axis, double[] k_axis, double kappa, double tau) {
 		return (H_nk(n) / n) - (kappa * k)
 				- (tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n);
