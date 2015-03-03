@@ -15,11 +15,14 @@ import java.awt.geom.Point2D;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument.Content;
 
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.generators.EvolvingGraphGenerator;
+import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
@@ -35,16 +38,25 @@ public class VisualizeNetPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Graph<Integer, String> m_graph;
+	
 	private Layout<Integer, String> mVisualizer;
 	private VisualizationViewer<Integer, String> mVizViewer;
 	public static Net net;
+		
+	public VisualizeNetPanel() {
+		restart();
+	}
 	
-	public VisualizeNetPanel(Net net) {
-		VisualizeNetPanel.net = net;
-		m_graph = net.net;
-		mVisualizer = new FRLayout<Integer, String>(m_graph);
-
+	public void repaintPanel(){
+		
+		mVizViewer.getRenderer().setVertexRenderer(new MyRenderer());
+		mVisualizer.reset();
+		mVizViewer.revalidate();
+		mVizViewer.repaint();
+	}
+	protected void restart() {
+		net = new Net(20,4,2,0);
+		mVisualizer = new CircleLayout<Integer, String>(net.net);
 		mVizViewer = new VisualizationViewer<Integer, String>(mVisualizer);
 		mVizViewer.setBackground(Color.WHITE);
 		Transformer<Integer, String> transformer = new Transformer<Integer, String>() {
@@ -56,17 +68,7 @@ public class VisualizeNetPanel extends JPanel {
 		    mVizViewer.getRenderContext().setVertexLabelTransformer(transformer);
 		mVizViewer.getRenderer().setVertexRenderer(new MyRenderer());
 		add(mVizViewer);
-		mVisualizer.reset();
-		mVizViewer.revalidate();
-		mVizViewer.repaint();
-		
-	}
-	
-	public void repaintPanel(){
-		mVizViewer.getRenderer().setVertexRenderer(new MyRenderer());
-		mVisualizer.reset();
-		mVizViewer.revalidate();
-		mVizViewer.repaint();
+		repaintPanel();
 	}
 	
 	static class MyRenderer implements Vertex<Integer, String> {
@@ -79,10 +81,10 @@ public class VisualizeNetPanel extends JPanel {
 		      Point2D center = layout.transform(vertex);
 		      Shape shape;
 		      if(net.BM != -1 && vertex.intValue() == net.BM){
-		    	  shape = new Ellipse2D.Double(center.getX()-10, center.getY()-10, 40, 40);
+		    	  shape = new Ellipse2D.Double(center.getX()-20, center.getY()-20, 40, 40);
 		      }
 		      else if (net.TI != -1 && vertex.intValue() == net.TI) {
-		    	  shape = new Rectangle2D.Double(center.getX()-10, center.getY()-10, 30, 30);
+		    	  shape = new Rectangle2D.Double(center.getX()-15, center.getY()-15, 30, 30);
 		      }
 		      else {
 		    	  shape = new Ellipse2D.Double(center.getX()-10, center.getY()-10, 20, 20);
@@ -92,22 +94,46 @@ public class VisualizeNetPanel extends JPanel {
 		      graphicsContext.fill(shape);
 		}	
 	  }
+	
 	public static void main(String[] args) {
 		
 		JFrame jf = new JFrame("network");
 		Container pane = jf.getContentPane();
 		
-		Net net = new Net(20, 4,2,0);
-		final VisualizeNetPanel panel = new VisualizeNetPanel(net);
-		JButton start = new JButton("20 meetings");
-		start.addActionListener(new ActionListener() {		
+		final VisualizeNetPanel panel = new VisualizeNetPanel();
+		final JTextField meetings = new JTextField(String.valueOf(evolution(panel, 0)).substring(0, 5));
+		JButton ev20 = new JButton("20 meetings");
+		ev20.addActionListener(new ActionListener() {		
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				evolution(panel, 20);		
+				meetings.setText(String.valueOf(evolution(panel, 20)).substring(0, 5));		
 			}
 		});
 		
-		pane.add(start,BorderLayout.SOUTH);
+		JButton ev1 = new JButton("1 meeting");
+		ev1.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				meetings.setText(String.valueOf(evolution(panel, 1)).substring(0, 5));	
+			}
+		});
+		
+		JButton reset = new JButton("reset");
+		reset.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				panel.restart();
+				meetings.setText(String.valueOf(evolution(panel, 0)).substring(0, 5));	
+			}
+		});
+		
+		JPanel panelSouth = new JPanel();
+		pane.add(panelSouth, BorderLayout.SOUTH);
+		panelSouth.add(reset);
+		panelSouth.add(ev1);
+		panelSouth.add(ev20);
+		panelSouth.add(new JTextArea("Synchronization parameter: "));
+		panelSouth.add(meetings);
 		jf.add(panel, BorderLayout.CENTER);
 	
 		jf.setSize(700, 500);
@@ -116,18 +142,27 @@ public class VisualizeNetPanel extends JPanel {
 		jf.setVisible(true);
 
 	}
-	
-	public static void evolution(VisualizeNetPanel panel, int iter){
+
+	public static double evolution(VisualizeNetPanel panel, int iter){
 		DynamicsFunctions dyn = new DynamicsFunctions();
+		double synchrony = 0.0;
 		for(int i = 0; i < iter; i++){
+			Agent[] agents = dyn.takeRandomNeighbors(net);
 			if(net.TI == -1){
-				dyn.updateOpinions_BasicModel(dyn.takeRandomNeighbors(net));
+				dyn.updateOpinions_BasicModel(agents);
 			}
 			else {
-				dyn.updateOpinions_InformationModel(net,dyn.takeRandomNeighbors(net));
+				dyn.updateOpinions_InformationModel(net,agents);
 			}
 		}
-		panel.repaintPanel();
+		if(net.TI == -1){
+			synchrony = dyn.countBasicTotalSynchrony(net);
+		}
+		else {	
+			synchrony = dyn.countTotalSynchrony(net);
+		}
+		panel.repaint();
+		return synchrony;
 	}
 
 }

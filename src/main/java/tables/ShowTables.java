@@ -12,15 +12,15 @@ import org.math.plot.Plot2DPanel;
 
 public class ShowTables {
 
-	static double lambda = 70;
+	static int lambda = 60;
 
 	public static void main(String[] args) {
 
 		T_steep_k_table T1 = new T_steep_k_table(1.0);
-		T1.readTnkFromFile(70, 1.0);
+		T1.readTnkFromFile(lambda, 1.0);
 		
 		T_steep_k_table T0 = new T_steep_k_table(0.0);
-		T0.readTnkFromFile(50, 0.0);
+		T0.readTnkFromFile(lambda, 0.0);
 
 		JFrame frame = new JFrame("a plot panel");
 		frame.setLayout(new GridLayout(1, 2));	

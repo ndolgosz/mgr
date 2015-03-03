@@ -1,5 +1,6 @@
 package mgr;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,54 +10,49 @@ import java.net.URISyntaxException;
 import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
+import org.math.plot.Plot3DPanel;
+import org.math.plot.plots.GridPlot3D;
+
+import tables.T_steep_k_table;
 
 public class Main {
 
-	static int ITER = 1000;
-	static int TIME = 200;
-	static double lambda = 70;
+	static int lambda = 60;
+	static double tau = 0.002;
+	static double kappa = 0.001;
+	static int probSize = 10;
 
 	public static void main(String[] args) {
 
-		System.out.println("Start! ct(t,n)");
+		DynamicsFunctions dyn = new DynamicsFunctions();
 
-		/*	double[] pair2 = dyn.optimalGroup_steep_k(T.T_fun, T.steep_axis,
-					T.k_axis, 0.1, 0.1);
-			System.out.println("prob: " + prob + " steep*: " + pair2[0]
-					+ " k*: " + pair2[1]);
-			i++;
-		}
-*/
-	/*	T_steep_k_table T1 = new T_steep_k_table();
+		T_steep_k_table Tsk = new T_steep_k_table(0);
+		double[] probs = new double[probSize];
+		double[] costs = new double[20];
+		double[][] optSteep = new double[probSize][20];
 		
-			try {
-				T1.readTnkFromFile(70, 1.0);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		double prob = 0.0;
+			
+		for (int i = 0; i < probSize; i++){
+			for (int cost = 1; cost <= 20; cost++) {
+				Tsk.readTnkFromFile(lambda, prob);
+				optSteep[i][cost - 1] = dyn.optimalGroup_steep_cost(Tsk, kappa, tau, cost);
+				costs[cost-1] = cost;
 			}
 			
-			T_steep_k_table T0 = new T_steep_k_table();
-			
-			try {
-				T0.readTnkFromFile(50, 0.0);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			probs[i] = prob;
+			prob += 0.1;
+		}
+		Plot3DPanel plot = new Plot3DPanel();
+		plot.addGridPlot("communication cost", costs,probs, optSteep);
+		plot.setAxisLabels("cost", "inequality", "T(cost, inequality)");
+		plot.setFixedBounds(2, 0, 3);
 		
 		JFrame frame = new JFrame("a plot panel");
-		//frame.setContentPane(T.createPlot());
-		frame.setLayout(new GridLayout(1, 2));
-		//Plot2DPanel[] plots =
-		// dyn.optimalGroup_kappa_tau(T.T_fun, T.n_axis, T.k_axis);
-
-		frame.add(T1.createPlot());
-		frame.add(T0.createPlot());
+		frame.getContentPane().add(plot);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setSize(1000, 500);
-		System.out.println("End!");
-*/
+
 	}
 }

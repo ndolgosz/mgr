@@ -54,7 +54,7 @@ public class Net {
         setWeightsToEveryAgent();
 
     }
-
+ 
 	private void updateGraph() {
 
         net = new UndirectedSparseGraph<Integer, String>();
@@ -63,7 +63,12 @@ public class Net {
             net.addVertex(i);
             agentsVertices.put(i, new Agent(i));
         }
+        
         Integer[][] connections = randomConnectionsMatrix();
+        while(!doesEveryAgentHasKNeighbours(connections)){
+        	connections = randomConnectionsMatrix();
+        }
+        
         int edge = 0;
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
@@ -72,7 +77,6 @@ public class Net {
                 }
                 edge++;
             }
-
         }
     }
 
@@ -124,7 +128,6 @@ public class Net {
        
         Integer totalCon[][] = createZerosMatrix();
         for (int i = 0; i < numVertices; i++) {
-            // printMatrixConnection(totalCon);
             List<Integer> list = createIntegersVector(i + 2, 1);
             while (countSumOfRow(totalCon, i) < numEdges && list.size() > 0) {
                 int idx = new Random().nextInt(list.size());
@@ -136,9 +139,24 @@ public class Net {
                 }
             }
         }
+        
         return totalCon;
     }
 
+    private boolean doesEveryAgentHasKNeighbours(Integer[][] conn){
+    	
+    	int size = conn.length;
+    	
+    	for(int i = size - 1; i >= 0; i--){
+    		int sum = 0;
+    		for(int j = 0; j < conn[i].length ; j++){
+    			sum = sum + conn[i][j];
+    		}
+    		if(sum != numEdges) return false;
+    	}  	
+    	return true;
+    }
+    
     private void setWeightsToEveryAgent() {
         for (int j = 1; j <= numVertices; j++) {
             agentsVertices.get(j).countWeight(this);

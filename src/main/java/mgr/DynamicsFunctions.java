@@ -5,6 +5,9 @@ import java.util.Random;
 
 import org.math.plot.Plot2DPanel;
 
+import tables.T_n_k_table;
+import tables.T_steep_k_table;
+
 public class DynamicsFunctions {
 
 
@@ -138,7 +141,7 @@ public class DynamicsFunctions {
 			}
 		}
 
-		return Tnk[nInd][kInd];
+		return Tnk[kInd][nInd];
 	}
 
 	private double H_nk(double n) {
@@ -159,10 +162,19 @@ public class DynamicsFunctions {
 		return (H_nk(n) / n) - (kappa * k)
 				- (tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n);
 	}
+	
+	private double B_costk(int n, double steep, int k, int cost, double[][] Tnk,
+			double[] steep_axis, double[] k_axis, double kappa, double tau) {
+		return (H_nk(n) / n) - (kappa * k)
+				- Math.pow((tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n), cost);
+	}
 
-	public int[] optimalGroup_n_k(double[][] Tnk, double[] n_axis,
-			double[] k_axis, double kappa, double tau) {
+	public int[] optimalGroup_n_k(T_n_k_table table, double kappa, double tau) {
 
+		double[][] Tnk = table.T_fun;
+		double[] n_axis = table.n_axis;
+		double[] k_axis = table.k_axis;
+		
 		double maxB = B_nk(n_axis[0], (int) k_axis[0], Tnk,
 				n_axis, k_axis, kappa, tau);
 		int[] optimum = new int[2];
@@ -182,16 +194,18 @@ public class DynamicsFunctions {
 		return optimum;
 	}
 
-	public double[] optimalGroup_steep_k(double[][] Tnk, double[] steep_axis,
-			double[] k_axis, double kappa, double tau) {
+	public double[] optimalGroup_steep_k(T_steep_k_table table, double kappa, double tau) {
 
 		int n_opt = 20;
-
+		double[][] Tnk = table.T_fun;
+		double[] steep_axis = table.steep_axis;
+		double[] k_axis = table.k_axis;
+		
 		double maxB = B_steepk(n_opt, steep_axis[0], (int) k_axis[0], Tnk,
 				steep_axis, k_axis, kappa, tau);
 		double[] optimum = new double[2];
-		for (int i = 0; i < Tnk.length; i++) {
-			for (int j = 0; j < k_axis.length; j++) {
+		for (int i = 1; i < steep_axis.length; i++) {
+			for (int j = 1; j < k_axis.length; j++) {
 
 				double bnk = B_steepk(n_opt, steep_axis[i], (int) k_axis[j],
 						Tnk, steep_axis, k_axis, kappa, tau);
@@ -200,21 +214,43 @@ public class DynamicsFunctions {
 					optimum[0] = steep_axis[i];
 					optimum[1] = k_axis[j];
 				}
-
 			}
 		}
 		return optimum;
 	}
 
-	public Plot2DPanel[] optimalGroup_kappa_tau(double[][] Tnk,
-			double[] n_axis, double[] k_axis) {
+	public double optimalGroup_steep_cost(T_steep_k_table table, double kappa, double tau, int cost) {
+
+		double[][] Tnk = table.T_fun;
+		double[] steep_axis = table.steep_axis;
+		double[] k_axis = table.k_axis;
+		
+		int n_opt = 20;
+		int k_opt = 4;
+
+		double maxB = B_costk(n_opt, steep_axis[0], k_opt, cost, Tnk,
+				steep_axis, k_axis, kappa, tau);
+		double optimum = steep_axis[0];
+		for (int i = 1; i < steep_axis.length; i++) {
+
+				double bnk = B_costk(n_opt, steep_axis[i], k_opt,cost,
+						Tnk, steep_axis, k_axis, kappa, tau);	
+				if (maxB < bnk) {
+					maxB = bnk;
+					optimum = steep_axis[i];	
+				}
+			}
+		return optimum;
+	}
+	
+	public Plot2DPanel[] optimalGroup_kappa_tau(T_n_k_table table) {
 
 		double[] n1 = new double[100];
 		double[] k1 = new double[100];
 		double[] kappa_vec = new double[100];
 		int i = 0;
 		for (double kappa = 0; kappa <= 0.0005; kappa = kappa + 0.000005) {
-			int[] pair = optimalGroup_n_k(Tnk, n_axis, k_axis, kappa,
+			int[] pair = optimalGroup_n_k(table, kappa,
 					0.00001);
 			n1[i] = (double) pair[0];
 			k1[i] = (double) pair[1];
@@ -226,7 +262,7 @@ public class DynamicsFunctions {
 		double[] tau_vec = new double[100];
 		i = 0;
 		for (double tau = 0; tau <= 0.00004; tau = tau + 0.000005) {
-			int[] pair = optimalGroup_n_k(Tnk, n_axis, k_axis, 0.0001, tau);
+			int[] pair = optimalGroup_n_k(table, 0.0001, tau);
 			n2[i] = (double) pair[0];
 			k2[i] = (double) pair[1];
 			tau_vec[i] = tau;

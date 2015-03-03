@@ -24,9 +24,9 @@ public class T_steep_k_table {
 	private double diff = 0.2;
 	private int endK = n_opt - 1;
 
-	double[] steep_axis = new double[(int) ((endSteep - begSteep) / diff + 1)];
-	double[] k_axis = new double[endK - begK + 1];
-	double[][] T_fun = new double[endK - begK + 1][(int) ((endSteep - begSteep)
+	public double[] steep_axis = new double[(int) ((endSteep - begSteep) / diff + 1)];
+	public double[] k_axis = new double[endK - begK + 1];
+	public double[][] T_fun = new double[endK - begK + 1][(int) ((endSteep - begSteep)
 			/ diff + 1)];
 
 	public T_steep_k_table(double prob, int lambda) {
@@ -51,7 +51,7 @@ public class T_steep_k_table {
 		int steep_iter = 0;
 
 		// DYNAMICS
-		while (steep <= endSteep + diff / 2) {
+		while (steep_iter <= (int) endSteep/diff) {
 			System.out.println("For steepness = " + steep);
 
 			k = begK;
@@ -86,8 +86,9 @@ public class T_steep_k_table {
 	public Plot3DPanel createPlot() {
 
 		Plot3DPanel plot = new Plot3DPanel();
-		plot.addGridPlot("T(n,k)", steep_axis, k_axis, T_fun);
+		plot.addGridPlot("T(steepness,k)", steep_axis, k_axis, T_fun);
 		plot.setAxisLabels("steepness", "k", "T(steepness,k)");
+		plot.setFixedBounds(2, 50, 500);
 		return plot;
 	}
 
@@ -156,7 +157,7 @@ public class T_steep_k_table {
 	public void readTnkFromFile(int lambda, double prob) {
 		InputStream in = getClass().getResourceAsStream(
 				"Tsteepk_L" + String.valueOf(lambda) + "_"
-						+ String.valueOf(prob) + ".txt");
+						+ String.valueOf(prob).substring(0, 3) + ".txt");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int i = 0;
 		try {

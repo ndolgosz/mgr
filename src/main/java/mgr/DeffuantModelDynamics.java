@@ -5,7 +5,7 @@ import java.util.Random;
 
 import org.math.plot.Plot2DPanel;
 
-public class VoterModelDynamics {
+public class DeffuantModelDynamics {
 
 	public Agent takeRandomAgent(Net net) {
 		Random r = new Random();
@@ -32,7 +32,7 @@ public class VoterModelDynamics {
 		return i;
 	}
 
-	public void updateOpinions_InformationModel(Net net, Agent[] agents) {
+	public void updateOpinions_VoterModel(Net net, Agent[] agents) {
 
 		int TI = net.TI;
 
