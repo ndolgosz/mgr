@@ -32,42 +32,24 @@ public class DeffuantModelDynamics {
 		return i;
 	}
 
-	public void updateOpinions_VoterModel(Net net, Agent[] agents) {
+	public void updateOpinions_DeffuantModel(Net net, Agent[] agents, double threshold) {
 
 		int TI = net.TI;
-
+		
 		Agent agent1 = agents[0];
 		Agent agent2 = agents[1];
-		double s1 = agent1.getWeight();
-		double s2 = agent2.getWeight();
-		double f;
-		double diff = agent1.getOpinion() - agent2.getOpinion();
 		
-		if (agent1.getVertex() == TI || agent2.getVertex() == TI) {
-			f = net.agentsVertices.get(TI).getOpinion();
-		} else if (diff <= 180 && diff >= 0) {
-			f = agent1.getOpinion()
-					- (s2 / (s1 + s2)) * diff;
-		} else if (diff > 180) {
-			f = agent1.getOpinion()
-					- (s2 / (s1 + s2)) * (diff - 360);
-		} else if (diff >= -180 && diff <= 0) {
-			f = agent1.getOpinion()
-					- (s2 / (s1 + s2) * diff);
-		} else {
-			f = agent1.getOpinion()
-					- (s2 / (s1 + s2) * (diff + 360));
-		}
-
-		if (f < 0) {
-			f = f + 360;
-		}
-		else if (f >= 360) {
-			f = f - 360;
-		}
+		double ag1s = agent1.getWeight() / (agent1.getWeight() + agent2.getWeight());
+		double ag2s = agent2.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		
-		agent1.setOpinion(f);
-		agent2.setOpinion(f);
+		if(Math.abs(agent1.getOpinion() - agent2.getOpinion()) < threshold){
+			if(agent1.getVertex() != TI){
+				agent1.setOpinion(agent1.getOpinion() + ag2s * (agent2.getOpinion() - agent1.getOpinion()));
+			}
+			if(agent2.getVertex() != TI){
+				agent2.setOpinion(agent2.getOpinion() + ag1s * (agent1.getOpinion() - agent2.getOpinion()));
+			}
+		}
 
 	}
 

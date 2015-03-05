@@ -55,7 +55,8 @@ public class VisualizeNetPanel extends JPanel {
 		mVizViewer.repaint();
 	}
 	protected void restart() {
-		net = new Net(20,4,2,0);
+		net = new Net(20,4);
+		net.configureInformationModel(1.0, 2);
 		mVisualizer = new CircleLayout<Integer, String>(net.net);
 		mVizViewer = new VisualizationViewer<Integer, String>(mVisualizer);
 		mVizViewer.setBackground(Color.WHITE);
@@ -145,6 +146,7 @@ public class VisualizeNetPanel extends JPanel {
 
 	public static double evolution(VisualizeNetPanel panel, int iter){
 		DynamicsFunctions dyn = new DynamicsFunctions();
+		DeffuantModelDynamics def = new DeffuantModelDynamics();
 		double synchrony = 0.0;
 		for(int i = 0; i < iter; i++){
 			Agent[] agents = dyn.takeRandomNeighbors(net);
@@ -152,7 +154,8 @@ public class VisualizeNetPanel extends JPanel {
 				dyn.updateOpinions_BasicModel(agents);
 			}
 			else {
-				dyn.updateOpinions_InformationModel(net,agents);
+				//dyn.updateOpinions_InformationModel(net,agents);
+				def.updateOpinions_DeffuantModel(net, agents,90);
 			}
 		}
 		if(net.TI == -1){

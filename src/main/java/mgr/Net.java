@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import edu.uci.ics.jung.algorithms.cluster.WeakComponentClusterer;
@@ -21,6 +22,7 @@ public class Net {
     HashMap<Integer, Agent> agentsVertices;
     Map<Integer, Number> distanceBM;
     Graph<Integer, String> net;
+    Map<Integer,Agent> copyOfAgents;
 
     public Net(int n, int k) {
         this.steepness = 1.0;
@@ -28,33 +30,31 @@ public class Net {
         this.numVertices = n;
         this.numEdges = k;
         updateGraph();
+        
         while (new WeakComponentClusterer<Integer, String>().transform(net)
                 .size() != 1) {
             updateGraph();
         }
+        this.copyOfAgents = (Map<Integer, Agent>) agentsVertices.clone();
 
     }
-
-    public Net(int n, int k, double steep, double prob) {
-
-        this.steepness = steep;
-        agentsVertices = new HashMap<Integer, Agent>();
-        this.numVertices = n;
-        this.numEdges = k;
-        updateGraph();
-        while (new WeakComponentClusterer<Integer, String>().transform(net)
-                .size() != 1) {
-            updateGraph();
-        }
-        chooseBM();
+    
+    public void configureInformationModel(double prob, double steep){
+    	this.steepness = steep;
+    	resetAgentsOpinion();
+    	chooseBM();
         UnweightedShortestPath<Integer, String> path = new UnweightedShortestPath<>(
                 net);
         distanceBM = path.getDistanceMap(BM);
         chooseTI(prob);
         setWeightsToEveryAgent();
-
     }
- 
+    
+    private void resetAgentsOpinion(){
+    	for(int i = 1; i <= numVertices; i++){
+    		agentsVertices.get(i).setOpinion(copyOfAgents.get(i).getOpinion());
+    	}
+    }
 	private void updateGraph() {
 
         net = new UndirectedSparseGraph<Integer, String>();

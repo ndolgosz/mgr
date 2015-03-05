@@ -47,39 +47,40 @@ public class T_steep_k_table {
 		System.out.println("Building T(steep,k) plot: ITER=" + ITER
 				+ " lambda: " + lambda);
 		int k = begK;
-		double steep = begSteep;
-		int steep_iter = 0;
 
-		// DYNAMICS
-		while (steep_iter <= (int) endSteep/diff) {
-			System.out.println("For steepness = " + steep);
-
-			k = begK;
-			while (k <= endK) {
-				// System.out.println("\tFor k = " + k);
+		while (k <= endK) {
+			//System.out.println("\tFor k = " + k);
+			
+			Net net = new Net(n_opt, k);
+			
+			double steep = begSteep;
+			int steep_iter = 0;
+			while (steep_iter <= (int) endSteep / diff) {
+				//System.out.println("For steepness = " + steep);
+				
+				
 				double T = 0;
-
+				//usrednianie
 				for (int run = 1; run <= ITER; run++) {
+					net.configureInformationModel(prob, steep);
 					double ct = lambda + 1;
-					Net net = new Net(n_opt, k, steep, prob);
+					
 
 					int i = 0;
 					while (ct > lambda && i < 800) {
 						dynamics.updateOpinions_InformationModel(net,
 								dynamics.takeRandomNeighbors(net));
-						ct = dynamics.countTotalSynchrony(net);
-						// System.out.println(i + " : " +ct);
-
+						ct = dynamics.countTotalSynchrony(net);		
 						i++;
 					}
 					T = T + i - 1;
 				}
+				
 				T_fun[k - begK][steep_iter] = T / ITER;
-				k++;
+				steep = steep + diff;
+				steep_iter++;	
 			}
-			steep = steep + diff;
-			steep_iter++;
-
+			k++;
 		}
 	}
 

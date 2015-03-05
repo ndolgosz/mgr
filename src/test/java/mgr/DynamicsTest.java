@@ -9,7 +9,8 @@ public class DynamicsTest {
     @Test
     public void setOpinion_InformationModelTest() {
         DynamicsFunctions dyn = new DynamicsFunctions();
-        Net net = new Net(20, 4, 2, 0);
+        Net net = new Net(20, 4);
+        net.configureInformationModel(0, 2);
         for (int i = 0; i < 200; i++) {        
             Agent[] agents = dyn.takeRandomNeighbors(net);
             dyn.updateOpinions_InformationModel(net, agents);
@@ -42,7 +43,8 @@ public class DynamicsTest {
     public void addingVectorsTest3() {
         DynamicsFunctions dyn = new DynamicsFunctions();
         for (int i = 0; i < 200; i++) {
-            Net net = new Net(20, 4, 2, 0);
+            Net net = new Net(20, 4);
+            net.configureInformationModel(0, 2);
             Agent[] agents = dyn.takeRandomNeighbors(net);
             agents[0].setOpinion(350);
             agents[1].setOpinion(30);
@@ -60,7 +62,8 @@ public class DynamicsTest {
     public void addingVectorsTest2() {
         DynamicsFunctions dyn = new DynamicsFunctions();
         for (int i = 0; i < 200; i++) {
-            Net net = new Net(20, 4, 2, 0);
+            Net net = new Net(20, 4);
+            net.configureInformationModel(0, 2);
             Agent[] agents = dyn.takeRandomNeighbors(net);
             agents[0].setOpinion(280);
             agents[1].setOpinion(105);
@@ -77,7 +80,8 @@ public class DynamicsTest {
     public void addingVectorsTest4() {
         DynamicsFunctions dyn = new DynamicsFunctions();
         for (int i = 0; i < 200; i++) {
-            Net net = new Net(20, 4, 2, 0);
+            Net net = new Net(20, 4);
+            net.configureInformationModel(0, 2);
             Agent[] agents = dyn.takeRandomNeighbors(net);
             agents[0].setOpinion(0);
             agents[1].setOpinion(175);
@@ -94,7 +98,8 @@ public class DynamicsTest {
     public void addingVectorsTest5() {
         DynamicsFunctions dyn = new DynamicsFunctions();
         for (int i = 0; i < 200; i++) {
-            Net net = new Net(20, 4, 2, 0);
+            Net net = new Net(20, 4);
+            net.configureInformationModel(0, 2);
             Agent[] agents = dyn.takeRandomNeighbors(net);
             agents[0].setOpinion(10);
             agents[1].setOpinion(340);
