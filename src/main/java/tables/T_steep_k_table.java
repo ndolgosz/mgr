@@ -89,7 +89,7 @@ public class T_steep_k_table {
 		Plot3DPanel plot = new Plot3DPanel();
 		plot.addGridPlot("T(steepness,k)", steep_axis, k_axis, T_fun);
 		plot.setAxisLabels("steepness", "k", "T(steepness,k)");
-		plot.setFixedBounds(2, 50, 500);
+		plot.setFixedBounds(2, 50, 800);
 		return plot;
 	}
 

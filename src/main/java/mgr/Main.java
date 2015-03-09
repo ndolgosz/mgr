@@ -17,10 +17,10 @@ import tables.T_steep_k_table;
 
 public class Main {
 
-	static int lambda = 60;
-	static double tau = 0.002;
-	static double kappa = 0.001;
-	static int probSize = 10;
+	static int lambda = 15;
+	static double tau = 1;
+	static double kappa = 1;
+	static int probSize = 11;
 
 	public static void main(String[] args) {
 
@@ -36,7 +36,7 @@ public class Main {
 		for (int i = 0; i < probSize; i++){
 			for (int cost = 1; cost <= 20; cost++) {
 				Tsk.readTnkFromFile(lambda, prob);
-				optSteep[i][cost - 1] = dyn.optimalGroup_steep_cost(Tsk, kappa, tau, cost);
+				optSteep[i][cost-1] = dyn.optimalGroup_steep_cost(Tsk, kappa, tau, cost);
 				costs[cost-1] = cost;
 			}
 			
@@ -45,8 +45,10 @@ public class Main {
 		}
 		Plot3DPanel plot = new Plot3DPanel();
 		plot.addGridPlot("communication cost", costs,probs, optSteep);
-		plot.setAxisLabels("cost", "inequality", "T(cost, inequality)");
+		plot.setAxisLabels("cost", "inequality", "optimal steepness");
 		plot.setFixedBounds(2, 0, 3);
+		plot.setFixedBounds(0, 0, 20);
+		plot.setFixedBounds(1, 0, 1);
 		
 		JFrame frame = new JFrame("a plot panel");
 		frame.getContentPane().add(plot);

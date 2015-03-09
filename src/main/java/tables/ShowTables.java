@@ -12,7 +12,7 @@ import org.math.plot.Plot2DPanel;
 
 public class ShowTables {
 
-	static int lambda = 60;
+	static int lambda = 30;
 
 	public static void main(String[] args) {
 

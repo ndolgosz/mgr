@@ -22,7 +22,7 @@ public class Net {
     HashMap<Integer, Agent> agentsVertices;
     Map<Integer, Number> distanceBM;
     Graph<Integer, String> net;
-    Map<Integer,Agent> copyOfAgents;
+    Map<Integer,Double> copyOfAgents;
 
     public Net(int n, int k) {
         this.steepness = 1.0;
@@ -35,11 +35,19 @@ public class Net {
                 .size() != 1) {
             updateGraph();
         }
-        this.copyOfAgents = (Map<Integer, Agent>) agentsVertices.clone();
+        this.copyOfAgents = getMapOfOpinions();
 
     }
     
-    public void configureInformationModel(double prob, double steep){
+    private Map<Integer, Double> getMapOfOpinions() {
+		Map<Integer,Double> map = new HashMap<>();
+		for(int i = 1; i <= numVertices; i++){
+			map.put(i, agentsVertices.get(i).getOpinion());
+		}
+		return map;
+	}
+
+	public void configureInformationModel(double prob, double steep){
     	this.steepness = steep;
     	resetAgentsOpinion();
     	chooseBM();
@@ -52,7 +60,7 @@ public class Net {
     
     private void resetAgentsOpinion(){
     	for(int i = 1; i <= numVertices; i++){
-    		agentsVertices.get(i).setOpinion(copyOfAgents.get(i).getOpinion());
+    		agentsVertices.get(i).setOpinion(copyOfAgents.get(i));
     	}
     }
 	private void updateGraph() {

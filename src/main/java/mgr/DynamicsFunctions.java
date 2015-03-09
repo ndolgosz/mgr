@@ -166,6 +166,13 @@ public class DynamicsFunctions {
 	private double B_costk(int n, double steep, int k, int cost, double[][] Tnk,
 			double[] steep_axis, double[] k_axis, double kappa, double tau) {
 		return (H_nk(n) / n) - (kappa * k)
+				- (tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n) * cost;
+				//- Math.pow((tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n), cost);
+	}
+	
+	private double B_costk_function(int n, double steep, int k, int cost, double[][] Tnk,
+			double[] steep_axis, double[] k_axis, double kappa, double tau) {
+		return (H_nk(n) / n) - (kappa * k)
 				- Math.pow((tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n), cost);
 	}
 
@@ -226,10 +233,11 @@ public class DynamicsFunctions {
 		double[] k_axis = table.k_axis;
 		
 		int n_opt = 20;
-		int k_opt = 4;
+		int k_opt = 5;
 
 		double maxB = B_costk(n_opt, steep_axis[0], k_opt, cost, Tnk,
 				steep_axis, k_axis, kappa, tau);
+		
 		double optimum = steep_axis[0];
 		for (int i = 1; i < steep_axis.length; i++) {
 
