@@ -10,10 +10,11 @@ import org.apache.commons.math3.analysis.interpolation.*;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
+import org.math.plot.Plot3DPanel;
 
 public class TableInterpolation {
 
-	public double[][] fitPlot2D(double[] x, double[] y, double[][] z) {
+	public static double[][] fitPlot2D(double[] x, double[] y, double[][] z) {
 		Map<Double, double[]> mapX = new HashMap<>();
 		Map<Double, double[]> mapY = new HashMap<>();
 		double[][] resultMap = new double[x.length][y.length];
@@ -43,7 +44,7 @@ public class TableInterpolation {
 		return resultMap;
 	}
 
-	public PolynomialFunction fitPolynomial1D(double[] x, double[] y) {
+	public static PolynomialFunction fitPolynomial1D(double[] x, double[] y) {
 		WeightedObservedPoints points = new WeightedObservedPoints();
 		for (int i = 0; i < x.length; i++) {
 			points.add(x[i], y[i]);
@@ -55,7 +56,7 @@ public class TableInterpolation {
 		return fun;
 	}
 
-	public double[] getValues(PolynomialFunction fun, double[] x) {
+	public static double[] getValues(PolynomialFunction fun, double[] x) {
 		double[] fitted = new double[x.length];
 		for (int i = 0; i < x.length; i++) {
 			fitted[i] = fun.value(x[i]);
@@ -63,7 +64,7 @@ public class TableInterpolation {
 		return fitted;
 	}
 
-	public double[] getValues(double[] coeff, double[] x) {
+	public static double[] getValues(double[] coeff, double[] x) {
 		double[] fitted = new double[x.length];
 		for (int i = 0; i < x.length; i++) {
 			fitted[i] = 0;
@@ -74,7 +75,7 @@ public class TableInterpolation {
 		return fitted;
 	}
 
-	private double getValue(double[] coeff, double x) {
+	private static double getValue(double[] coeff, double x) {
 		double fitted = 0;
 		for (int j = 0; j < coeff.length; j++) {
 			fitted = fitted + coeff[j] * Math.pow(x, j);
@@ -82,7 +83,7 @@ public class TableInterpolation {
 		return fitted;
 	}
 
-	public double[] interpolatePlot1D(double[] x, double[] y) {
+	public static double[] interpolatePlot1D(double[] x, double[] y) {
 
 		UnivariateInterpolator interpolator = new SplineInterpolator();
 		UnivariateFunction function = interpolator.interpolate(x, y);
@@ -94,19 +95,24 @@ public class TableInterpolation {
 		return intY;
 	}
 
-	public double[][] interpolatePlot2D(double[] x, double[] y, double[][] z) {
+	public static double[][] interpolatePlot2D(double[] x, double[] y,BicubicSplineInterpolatingFunction function) {
 
-		BicubicSplineInterpolator interpolator = new BicubicSplineInterpolator();
-		BicubicSplineInterpolatingFunction function = interpolator.interpolate(
-				x, y, z);
+		
 		double[][] interpolatedData = new double[x.length][y.length];
 
 		for (int i = 0; i < x.length; i++) {
-			for (int j = 0; i < y.length; j++) {
+			for (int j = 0; j < y.length; j++) {
 				interpolatedData[i][j] = function.value(x[i], y[j]);
 			}
 		}
 		return interpolatedData;
 	}
+	
+	public static BicubicSplineInterpolatingFunction getInterpolatedFunction(double[] x, double[] y, double[][] z){
+		SmoothingPolynomialBicubicSplineInterpolator interpolator = new  SmoothingPolynomialBicubicSplineInterpolator();
+		return interpolator.interpolate(
+				x, y, z);
+	}
+
 
 }

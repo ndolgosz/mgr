@@ -9,15 +9,18 @@ import java.net.URISyntaxException;
 import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
+import org.math.plot.Plot3DPanel;
+import org.math.plot.plots.GridPlot3D;
 
 public class ShowTables {
 
-	static int lambda = 30;
+	static int lambda = 10;
 
 	public static void main(String[] args) {
 
 		T_steep_k_table T1 = new T_steep_k_table(1.0);
 		T1.readTnkFromFile(lambda, 1.0);
+		
 		
 		T_steep_k_table T0 = new T_steep_k_table(0.0);
 		T0.readTnkFromFile(lambda, 0.0);

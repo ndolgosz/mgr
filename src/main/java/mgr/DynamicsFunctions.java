@@ -163,17 +163,12 @@ public class DynamicsFunctions {
 				- (tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n);
 	}
 	
-	private double B_costk(int n, double steep, int k, int cost, double[][] Tnk,
-			double[] steep_axis, double[] k_axis, double kappa, double tau) {
-		return (H_nk(n) / n) - (kappa * k)
-				- (tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n) * cost;
-				//- Math.pow((tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n), cost);
-	}
 	
-	private double B_costk_function(int n, double steep, int k, int cost, double[][] Tnk,
-			double[] steep_axis, double[] k_axis, double kappa, double tau) {
+	private double B_costk_function(int n, double k, double steep, double cost, T_steep_k_table T,
+			double kappa, double tau) {
+		
 		return (H_nk(n) / n) - (kappa * k)
-				- Math.pow((tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n), cost);
+				- Math.pow((tau * T.functionInterpolated.value(k, steep) / n), cost);
 	}
 
 	public int[] optimalGroup_n_k(T_n_k_table table, double kappa, double tau) {
@@ -201,25 +196,23 @@ public class DynamicsFunctions {
 		return optimum;
 	}
 
-	public double[] optimalGroup_steep_k(T_steep_k_table table, double kappa, double tau) {
+	public double[] optimalGroup_steep_k(T_steep_k_table table, double kappa, double tau, double cost) {
 
 		int n_opt = 20;
-		double[][] Tnk = table.T_fun;
+		
 		double[] steep_axis = table.steep_axis;
 		double[] k_axis = table.k_axis;
 		
-		double maxB = B_steepk(n_opt, steep_axis[0], (int) k_axis[0], Tnk,
-				steep_axis, k_axis, kappa, tau);
+		double maxB = B_costk_function(n_opt, k_axis[0], steep_axis[0], cost, table, kappa, tau);
 		double[] optimum = new double[2];
-		for (int i = 1; i < steep_axis.length; i++) {
-			for (int j = 1; j < k_axis.length; j++) {
+		for (double steep = steep_axis[0]; steep <= steep_axis[steep_axis.length - 1]; steep+=0.05) {
+			for (double k = k_axis[0]; k <= k_axis[steep_axis.length - 1]; k+=0.2) {
 
-				double bnk = B_steepk(n_opt, steep_axis[i], (int) k_axis[j],
-						Tnk, steep_axis, k_axis, kappa, tau);
+				double bnk = B_costk_function(n_opt, k, steep, cost, table, kappa, tau);
 				if (maxB < bnk) {
 					maxB = bnk;
-					optimum[0] = steep_axis[i];
-					optimum[1] = k_axis[j];
+					optimum[0] = steep;
+					optimum[1] = k;
 				}
 			}
 		}
@@ -228,26 +221,20 @@ public class DynamicsFunctions {
 
 	public double optimalGroup_steep_cost(T_steep_k_table table, double kappa, double tau, int cost) {
 
-		double[][] Tnk = table.T_fun;
+		int n_const = 20;
+		int k_const = 5;
+		
 		double[] steep_axis = table.steep_axis;
-		double[] k_axis = table.k_axis;
 		
-		int n_opt = 20;
-		int k_opt = 5;
-
-		double maxB = B_costk(n_opt, steep_axis[0], k_opt, cost, Tnk,
-				steep_axis, k_axis, kappa, tau);
-		
-		double optimum = steep_axis[0];
-		for (int i = 1; i < steep_axis.length; i++) {
-
-				double bnk = B_costk(n_opt, steep_axis[i], k_opt,cost,
-						Tnk, steep_axis, k_axis, kappa, tau);	
+		double maxB = B_costk_function(n_const, k_const, steep_axis[0], cost, table, kappa, tau);
+		double optimum =  steep_axis[0];
+		for (double steep = steep_axis[0]; steep <= steep_axis[steep_axis.length - 1]; steep+=0.005) {
+				double bnk = B_costk_function(n_const, k_const, steep, cost, table, kappa, tau);
 				if (maxB < bnk) {
 					maxB = bnk;
-					optimum = steep_axis[i];	
-				}
-			}
+					optimum = steep;				
+				}		
+		}
 		return optimum;
 	}
 	

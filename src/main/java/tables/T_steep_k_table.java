@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 import mgr.DynamicsFunctions;
 import mgr.Net;
 
+import org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunction;
 import org.math.plot.Plot3DPanel;
 
 public class T_steep_k_table {
@@ -28,6 +30,7 @@ public class T_steep_k_table {
 	public double[] k_axis = new double[endK - begK + 1];
 	public double[][] T_fun = new double[endK - begK + 1][(int) ((endSteep - begSteep)
 			/ diff + 1)];
+	public BicubicSplineInterpolatingFunction functionInterpolated;
 
 	public T_steep_k_table(double prob, int lambda) {
 		this.lambda = lambda;
@@ -49,47 +52,56 @@ public class T_steep_k_table {
 		int k = begK;
 
 		while (k <= endK) {
-			//System.out.println("\tFor k = " + k);
-			
-			Net net = new Net(n_opt, k);
-			
+			// System.out.println("\tFor k = " + k);
+
 			double steep = begSteep;
 			int steep_iter = 0;
 			while (steep_iter <= (int) endSteep / diff) {
-				//System.out.println("For steepness = " + steep);
-				
-				
+				// System.out.println("For steepness = " + steep);
+
 				double T = 0;
-				//usrednianie
+				// usrednianie
 				for (int run = 1; run <= ITER; run++) {
+					Net net = new Net(n_opt, k);
 					net.configureInformationModel(prob, steep);
 					double ct = lambda + 1;
-					
 
 					int i = 0;
 					while (ct > lambda && i < 800) {
 						dynamics.updateOpinions_InformationModel(net,
 								dynamics.takeRandomNeighbors(net));
-						ct = dynamics.countTotalSynchrony(net);		
+						ct = dynamics.countTotalSynchrony(net);
 						i++;
 					}
 					T = T + i - 1;
 				}
-				
+
 				T_fun[k - begK][steep_iter] = T / ITER;
 				steep = steep + diff;
-				steep_iter++;	
+				steep_iter++;
 			}
 			k++;
 		}
+
+		interpolateGraph();
+	}
+
+	private void interpolateGraph() {
+
+		functionInterpolated = TableInterpolation.getInterpolatedFunction(
+				k_axis, steep_axis, T_fun);
+
 	}
 
 	public Plot3DPanel createPlot() {
 
 		Plot3DPanel plot = new Plot3DPanel();
 		plot.addGridPlot("T(steepness,k)", steep_axis, k_axis, T_fun);
+		plot.addGridPlot("interpolation", steep_axis, k_axis, TableInterpolation
+				.interpolatePlot2D(k_axis, steep_axis, functionInterpolated));
 		plot.setAxisLabels("steepness", "k", "T(steepness,k)");
-		plot.setFixedBounds(2, 50, 800);
+		plot.setFixedBounds(2, 100, 1000);
+		
 		return plot;
 	}
 
@@ -200,6 +212,6 @@ public class T_steep_k_table {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		interpolateGraph();
 	}
 }

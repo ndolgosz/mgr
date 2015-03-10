@@ -15,18 +15,18 @@ import org.math.plot.plots.GridPlot3D;
 
 import tables.T_steep_k_table;
 
-public class Main {
+public class ChangingCommunicationCostGraph {
 
 	static int lambda = 15;
-	static double tau = 1;
-	static double kappa = 1;
+	static double tau = 0.001;
+	static double kappa =  0.001;
 	static int probSize = 11;
 
 	public static void main(String[] args) {
 
 		DynamicsFunctions dyn = new DynamicsFunctions();
 
-		T_steep_k_table Tsk = new T_steep_k_table(0);
+		
 		double[] probs = new double[probSize];
 		double[] costs = new double[20];
 		double[][] optSteep = new double[probSize][20];
@@ -34,8 +34,9 @@ public class Main {
 		double prob = 0.0;
 			
 		for (int i = 0; i < probSize; i++){
+			T_steep_k_table Tsk = new T_steep_k_table(0);
+			Tsk.readTnkFromFile(lambda, prob);
 			for (int cost = 1; cost <= 20; cost++) {
-				Tsk.readTnkFromFile(lambda, prob);
 				optSteep[i][cost-1] = dyn.optimalGroup_steep_cost(Tsk, kappa, tau, cost);
 				costs[cost-1] = cost;
 			}
