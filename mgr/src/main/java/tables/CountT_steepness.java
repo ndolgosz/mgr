@@ -43,8 +43,9 @@ public class CountT_steepness {
 			// usrednianie
 			for (int run = 1; run <= ITER; run++) {
 				
-				Net net = new Net(n_opt, k);				
+				NetBA net = new NetBA(n_opt);				
 				net.configureInformationModel(prob, steep);
+				net.setBMtoCenter();
 				
 				double ct = lambda + 1;
 				notSync = 0;

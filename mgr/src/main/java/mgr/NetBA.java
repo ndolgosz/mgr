@@ -1,6 +1,7 @@
 package mgr;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,11 +32,11 @@ public class NetBA {
 	int nrV = 1;
 	int nrE = 1;
 
-	public NetBA(int n, int k) {
+	public NetBA(int n) {
 		this.steepness = 1.0;
 		agentsVertices = new HashMap<Integer, Agent>();
 		this.numVertices = n;
-		this.numEdges = k;
+		
 		//System.out.println("starting building net");
 		updateGraph();
 
@@ -44,6 +45,7 @@ public class NetBA {
 		  .size() != 1) { updateGraph(); }
 		 
 		this.copyOfAgents = getMapOfOpinions();
+		numEdges = net.getEdgeCount();
 
 	}
 
@@ -68,7 +70,12 @@ public class NetBA {
 		//System.out.println("BM is nr : " +distanceBM);
 		chooseTI(prob);
 		setWeightsToEveryAgent();
-	}
+		
+
+		}
+		
+		
+	
 
 	private void resetAgentsOpinion() {
 		for (int i = 1; i <= numVertices; i++) {
@@ -96,16 +103,14 @@ public class NetBA {
 
 		Set<Integer> seedSet = new HashSet<Integer>();
 		
-		BarabasiAlbertGenerator bag = new BarabasiAlbertGenerator(graphFactory,
+		
+		BarabasiAlbertGenerator<Integer, Integer> bag = new BarabasiAlbertGenerator(graphFactory,
 				vertexFactory, edgeFactory, 1, 1, seedSet);
-	
+			
 		bag.evolveGraph(numVertices - 1);
 		
-		
 		this.net = (Graph<Integer, Integer>) bag.create();
-
 		
-
 		for (int i = 1; i <= numVertices; i++) {
 			agentsVertices.put(i, new Agent(i));
 		}
@@ -156,24 +161,7 @@ public class NetBA {
 
 	}
 
-	private Integer[][] randomConnectionsMatrix() {
 
-		Integer totalCon[][] = createZerosMatrix();
-		for (int i = 0; i < numVertices; i++) {
-			List<Integer> list = createIntegersVector(i + 2, 1);
-			while (countSumOfRow(totalCon, i) < numEdges && list.size() > 0) {
-				int idx = new Random().nextInt(list.size());
-				Integer random = list.get(idx);
-				list.remove(random);
-				if (countSumOfRow(totalCon, random - 1) < numEdges) {
-					totalCon[i][random - 1] = 1;
-					totalCon[random - 1][i] = 1;
-				}
-			}
-		}
-
-		return totalCon;
-	}
 
 	private boolean doesEveryAgentHasKNeighbours(Integer[][] conn) {
 

@@ -37,6 +37,20 @@ public Agent[] takeRandomNeighbors(NetBA net) {
 		return agents;
 	}
 
+public Agent[] takeRandomNeighbors(NetCayley net) {
+	
+	
+	Random r = new Random();
+	
+	Collection<Integer> edges = net.net.getEdges();	
+	int i = r.nextInt(edges.size());
+	edu.uci.ics.jung.graph.util.Pair<Integer> pair = net.net.getEndpoints((int) edges.toArray()[i]);
+	
+	Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
+	//System.out.println(pair.getFirst()+" "+pair.getSecond());
+	return agents;
+}
+
 
 	private int randomAgent(Net net) {
 		Random r = new Random();
@@ -147,6 +161,46 @@ public Agent[] takeRandomNeighbors(NetBA net) {
 
 	}
 
+	public void updateOpinions_InformationModel(NetCayley net, Agent[] agents) {
+
+		int TI = net.TI;
+
+		Agent agent1 = agents[0];
+		Agent agent2 = agents[1];
+		double s1 = agent1.getWeight();
+		double s2 = agent2.getWeight();
+		double f;
+		double diff = agent1.getOpinion() - agent2.getOpinion();
+		
+		if (agent1.getVertex() == TI || agent2.getVertex() == TI) {
+			f = net.agentsVertices.get(TI).getOpinion();
+		} else if (diff <= 180 && diff >= 0) {
+			f = agent1.getOpinion()
+					- (s2 / (s1 + s2)) * diff;
+		} else if (diff > 180) {
+			f = agent1.getOpinion()
+					- (s2 / (s1 + s2)) * (diff - 360);
+		} else if (diff >= -180 && diff <= 0) {
+			f = agent1.getOpinion()
+					- (s2 / (s1 + s2) * diff);
+		} else {
+			f = agent1.getOpinion()
+					- (s2 / (s1 + s2) * (diff + 360));
+		}
+
+		if (f < 0) {
+			f = f + 360;
+		}
+		else if (f >= 360) {
+			f = f - 360;
+		}
+		
+		agent1.setOpinion(f);
+		agent2.setOpinion(f);
+
+	}
+	
+	
 	public double countBasicTotalSynchrony(Net net) {
 
 		double ct = 0;
@@ -182,6 +236,24 @@ public Agent[] takeRandomNeighbors(NetBA net) {
 		ct = ct / ((net.numVertices) * (net.numVertices - 1));
 		return ct;
 	}
+	
+	public double countBasicTotalSynchrony(NetCayley net) {
+
+		double ct = 0;
+		for (int i = 1; i <= net.numVertices; i++) {
+			double iOp = net.agentsVertices.get(i).getOpinion();
+			for (int j = 1; j <= net.numVertices; j++) {
+				double jOp = net.agentsVertices.get(j).getOpinion();
+
+				ct = ct
+						+ Math.min(Math.abs(iOp - jOp),
+								Math.abs(Math.abs(iOp - jOp) - 360));
+			}
+		}
+
+		ct = ct / ((net.numVertices) * (net.numVertices - 1));
+		return ct;
+	}
 
 	public double countTotalSynchrony(Net net) {
 		double tiOp = net.agentsVertices.get(net.TI).getOpinion();
@@ -195,6 +267,17 @@ public Agent[] takeRandomNeighbors(NetBA net) {
 	}
 	
 	public double countTotalSynchrony(NetBA net) {
+		double tiOp = net.agentsVertices.get(net.TI).getOpinion();
+		double ct = 0;
+		for (int i = 1; i <= net.numVertices; i++) {
+			double iOp = net.agentsVertices.get(i).getOpinion();
+			ct = ct + Math.abs(iOp - tiOp);
+		}
+		ct = ct / (net.numVertices);
+		return ct;
+	}
+	
+	public double countTotalSynchrony(NetCayley net) {
 		double tiOp = net.agentsVertices.get(net.TI).getOpinion();
 		double ct = 0;
 		for (int i = 1; i <= net.numVertices; i++) {

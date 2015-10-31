@@ -17,7 +17,7 @@ public class AgentsOpinionsInTime {
 	
 	public static void main(String[] args) {
 
-		NetBA net = new NetBA(20, 4);
+		NetBA net = new NetBA(20);
 		net.configureInformationModel(prob, steep);
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		DeffuantModelDynamics def = new DeffuantModelDynamics();

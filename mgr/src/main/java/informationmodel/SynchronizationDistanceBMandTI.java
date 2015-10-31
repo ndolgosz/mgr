@@ -1,5 +1,6 @@
 package informationmodel;
 
+import java.rmi.UnexpectedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,14 +10,16 @@ import mgr.DeffuantModelDynamics;
 import mgr.DynamicsFunctions;
 import mgr.Net;
 import mgr.NetBA;
+import mgr.NetCayley;
 
 public class SynchronizationDistanceBMandTI {
 
 	static int ITER = 10000;
 	static double prob = 0.0;
 	static String model = "DEF"; // INF, DEF, BASIC
+	final static int distEnd = 3;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnexpectedException {
 
 		Double dBasicTemp;
 		Double dTotalTemp;
@@ -24,7 +27,7 @@ public class SynchronizationDistanceBMandTI {
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		DeffuantModelDynamics def = new DeffuantModelDynamics();
 
-		for (int dist = 1; dist <= 4; dist++) {
+		for (int dist = 1; dist <= distEnd; dist++) {
 			System.out.println("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ D I S T A N C E _ _ _ _ _ _ _ _ _ _ _ _ _");
 			System.out.println("Distance = " + dist);
 			for (int steep = 0; steep <= 4; steep++) {
@@ -38,11 +41,13 @@ public class SynchronizationDistanceBMandTI {
 				for (int iter = 0; iter < ITER; iter++) {
 
 					// System.out.println("Net number " + iter);
-					NetBA net = new NetBA(20, 4);
+					//NetBA net = new NetBA(25, 4)
+					NetCayley net = new NetCayley(distEnd);
 					net.configureInformationModel(prob, steep * 1.0);
 					net.setTIdistBM(dist);
 					while (net.TI == -100) {
-						net = new NetBA(500, 4);
+						//net = new NetBA(25, 4);
+						System.out.println("BLADDDDDDDD");
 						net.configureInformationModel(prob, steep * 1.0);
 						net.setTIdistBM(dist);
 					}
@@ -63,12 +68,12 @@ public class SynchronizationDistanceBMandTI {
 						// System.out.println("	step = " + i);
 						if (model.equals("INF")) {
 							dyn.updateOpinions_InformationModel(net,
-									dyn.takeRandomNeighbors(net));
+									def.takeRandomNeighbors(net));
 						} else if (model.equals("DEF")) {
 							def.updateOpinions_DeffuantModel(net,
-									dyn.takeRandomNeighbors(net), 180);
+									def.takeRandomNeighbors(net), 180);
 						} else if (model.equals("BASIC")) {
-							dyn.updateOpinions_BasicModel(dyn
+							dyn.updateOpinions_BasicModel(def
 									.takeRandomNeighbors(net));
 						}
 

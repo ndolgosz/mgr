@@ -1,5 +1,6 @@
 package tables;
 
+import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,8 +8,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import javax.swing.JFrame;
+
 import mgr.DynamicsFunctions;
 import mgr.Net;
+import mgr.NetBA;
 
 import org.math.plot.Plot3DPanel;
 
@@ -53,7 +57,9 @@ public class T_n_k_table {
 
 				for (int run = 1; run <= ITER; run++) {
 					double ct = lambda + 1;
-					Net net = new Net(n, k);
+					//Net net = new Net(n, k);
+					NetBA net = new NetBA(n);
+					
 					int i = 0;
 					while (ct > lambda && i < 300) {
 						dynamics.updateOpinions_BasicModel(dynamics
@@ -106,7 +112,7 @@ public class T_n_k_table {
 		try {
 			writer = new PrintWriter(
 					"/home/n.dolgoszyja/mgr/src/main/resources/mgr/Tnk_L"
-							+ String.valueOf((int) lambda) + ".txt");
+							+ String.valueOf((int) lambda) + "_BA.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -199,5 +205,21 @@ public class T_n_k_table {
 			}
 		}
 		T_fun = temp;
+	}
+	public static void main(String[] args) {
+
+		T_n_k_table T1 = new T_n_k_table(10);
+		T1.countTnkMatrix();
+		T1.saveTMatrixToFile();
+		
+		
+		JFrame frame = new JFrame("a plot panel");
+		//frame.setLayout(new GridLayout(1, 2));	
+		frame.add(T1.createPlot());
+	
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		frame.setSize(1000, 500);
+
 	}
 }

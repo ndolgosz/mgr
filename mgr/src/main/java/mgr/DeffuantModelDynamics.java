@@ -38,6 +38,19 @@ public class DeffuantModelDynamics {
 		Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
 		return agents;
 	}
+	
+	public Agent[] takeRandomNeighbors(NetCayley net) {
+		
+		
+		Random r = new Random();
+		
+		Collection<Integer> edges = net.net.getEdges();	
+		int i = r.nextInt(edges.size());
+		edu.uci.ics.jung.graph.util.Pair<Integer> pair = net.net.getEndpoints((int) edges.toArray()[i]);
+		
+		Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
+		return agents;
+	}
 
 
 	public int randomAgent(Net net) {
@@ -58,11 +71,16 @@ public class DeffuantModelDynamics {
 		double ag2s = agent2.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		
 		if(Math.abs(agent1.getOpinion() - agent2.getOpinion()) < threshold){
-			if(agent1.getVertex() != TI){
+			
+			if(agent1.getVertex() != TI && agent2.getVertex() != TI){
 				agent1.setOpinion(agent1.getOpinion() + ag2s * (agent2.getOpinion() - agent1.getOpinion()));
-			}
-			if(agent2.getVertex() != TI){
 				agent2.setOpinion(agent2.getOpinion() + ag1s * (agent1.getOpinion() - agent2.getOpinion()));
+			}
+			else if(agent2.getVertex() == TI){
+				agent1.setOpinion(agent2.getOpinion());
+			}
+			else if(agent1.getVertex() == TI){
+				agent2.setOpinion(agent1.getOpinion());
 			}
 		}
 
@@ -79,11 +97,42 @@ public class DeffuantModelDynamics {
 		double ag2s = agent2.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		
 		if(Math.abs(agent1.getOpinion() - agent2.getOpinion()) < threshold){
-			if(agent1.getVertex() != TI){
+			
+			if(agent1.getVertex() != TI && agent2.getVertex() != TI){
 				agent1.setOpinion(agent1.getOpinion() + ag2s * (agent2.getOpinion() - agent1.getOpinion()));
-			}
-			if(agent2.getVertex() != TI){
 				agent2.setOpinion(agent2.getOpinion() + ag1s * (agent1.getOpinion() - agent2.getOpinion()));
+			}
+			else if(agent2.getVertex() == TI){
+				agent1.setOpinion(agent2.getOpinion());
+			}
+			else if(agent1.getVertex() == TI){
+				agent2.setOpinion(agent1.getOpinion());
+			}
+		}
+
+	}
+	
+	public void updateOpinions_DeffuantModel(NetCayley net, Agent[] agents, double threshold) {
+
+		int TI = net.TI;
+		
+		Agent agent1 = agents[0];
+		Agent agent2 = agents[1];
+		
+		double ag1s = agent1.getWeight() / (agent1.getWeight() + agent2.getWeight());
+		double ag2s = agent2.getWeight() / (agent1.getWeight() + agent2.getWeight());
+		
+		if(Math.abs(agent1.getOpinion() - agent2.getOpinion()) < threshold){
+			
+			if(agent1.getVertex() != TI && agent2.getVertex() != TI){
+				agent1.setOpinion(agent1.getOpinion() + ag2s * (agent2.getOpinion() - agent1.getOpinion()));
+				agent2.setOpinion(agent2.getOpinion() + ag1s * (agent1.getOpinion() - agent2.getOpinion()));
+			}
+			else if(agent2.getVertex() == TI){
+				agent1.setOpinion(agent2.getOpinion());
+			}
+			else if(agent1.getVertex() == TI){
+				agent2.setOpinion(agent1.getOpinion());
 			}
 		}
 
@@ -101,6 +150,17 @@ public class DeffuantModelDynamics {
 	}
 	
 	public double countTotalSynchrony(NetBA net) {
+		double tiOp = net.agentsVertices.get(net.TI).getOpinion();
+		double ct = 0;
+		for (int i = 1; i <= net.numVertices; i++) {
+			double iOp = net.agentsVertices.get(i).getOpinion();
+			ct = ct + Math.abs(iOp - tiOp);
+		}
+		ct = ct / (net.numVertices);
+		return ct;
+	}
+	
+	public double countTotalSynchrony(NetCayley net) {
 		double tiOp = net.agentsVertices.get(net.TI).getOpinion();
 		double ct = 0;
 		for (int i = 1; i <= net.numVertices; i++) {
