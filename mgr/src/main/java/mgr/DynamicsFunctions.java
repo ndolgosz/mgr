@@ -7,6 +7,7 @@ import org.math.plot.Plot2DPanel;
 
 import tables.T_n_k_table;
 import tables.T_steep_k_table;
+import tables_BA.T_steep_n_table;
 
 public class DynamicsFunctions {
 
@@ -292,16 +293,20 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 			double[] k_axis) {
 		int nInd = -1;
 		int kInd = -1;
-		for (int i = 0; i < n_axis.length; i++) {
 
+		for (int i = 0; i < n_axis.length; i++) {
+			
 			if (n_axis[i] == n) {
 				nInd = i;
 				break;
 			}
 		}
+
 		for (int i = 0; i < k_axis.length; i++) {
+
 			if (k_axis[i] == k * 1.0) {
 				kInd = i;
+				
 				break;
 			}
 		}
@@ -327,6 +332,7 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 		return (H_nk(n) / n) - (kappa * k)
 				- (tau * T_nk(steep, k, Tnk, steep_axis, k_axis) / n);
 	}
+	
 	
 	
 	private double B_costk_function(int n, double k, double steep, double cost, T_steep_k_table T,
@@ -443,4 +449,57 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 
 		return new Plot2DPanel[] { plot1, plot2 };
 	}
+	
+	public double averageK(NetBA net){
+		
+		int k=0;
+		for(int i = 1; i<=net.numVertices; i++){
+			
+			k=k+net.net.getNeighborCount(i);
+		}
+		
+		return (k/(double) net.numVertices);
+	}
+	
+
+	public double B_n_steep(int n, double steep, double avK, double[][] Tnsteep, double[] n_axis,
+			double[] steep_axis, double kappa, double tau) {
+		return (H_nk(n) / n) - (kappa * avK)
+				- (tau * T_nk(steep, n, Tnsteep, steep_axis, n_axis) / n);
+	}
+	
+	private double countAverageK(int n, String netName){
+		
+		if(netName.equals("BA")){
+			NetBA net = new NetBA(n);
+			//System.out.println("BA : "+n+" : avK = "+averageK(net));
+			return averageK(net);
+		}		
+		return 0.0;
+	}
+	
+	public double[] optimalGroup_steep_n(T_steep_n_table table, double kappa, double tau, String netName) {
+
+	
+		double[][] tab = table.T_fun;
+		double[] steep_axis = table.steep_axis;
+		double[] n_axis = table.n_axis;
+		
+		double maxB = B_n_steep((int) n_axis[0], steep_axis[0], countAverageK((int) n_axis[0], netName), tab,n_axis,steep_axis, kappa, tau);
+		double[] optimum = new double[2];
+		for (double steep = steep_axis[0]; steep <= steep_axis[steep_axis.length - 1]; steep+=0.2) {
+			for (double n : n_axis) {
+				int n_int = (int) n;
+				
+				double bnk = B_n_steep(n_int, steep, countAverageK(n_int, netName), tab,n_axis,steep_axis, kappa, tau);
+				if (maxB < bnk) {
+					maxB = bnk;
+					optimum[0] = steep;
+					optimum[1] = n_int;
+				}
+			}
+		}
+		return optimum;
+	}
+
 }
