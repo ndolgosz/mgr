@@ -57,8 +57,8 @@ public class T_n_k_table {
 
 				for (int run = 1; run <= ITER; run++) {
 					double ct = lambda + 1;
-					//Net net = new Net(n, k);
-					NetBA net = new NetBA(n);
+					Net net = new Net(n, k);
+					//NetBA net = new NetBA(n);
 					
 					int i = 0;
 					while (ct > lambda && i < 300) {

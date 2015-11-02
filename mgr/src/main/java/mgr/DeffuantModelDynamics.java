@@ -1,5 +1,6 @@
 package mgr;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
@@ -136,6 +137,20 @@ public class DeffuantModelDynamics {
 			}
 		}
 
+	}
+	
+	public double synchronStdDev(ArrayList<Double> vec){
+		
+		double sum=0.0;	
+		double sum2=0.0;	
+		for(double v : vec)
+			sum=sum+v;
+		
+		double averageOp = sum/vec.size();
+		
+		for(double v : vec)
+			sum2=sum2+(v-averageOp)*(v-averageOp);	
+		return Math.sqrt(sum2/vec.size());
 	}
 
 	public double countTotalSynchrony(Net net) {

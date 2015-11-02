@@ -1,6 +1,7 @@
 package informationmodel;
 
 import java.rmi.UnexpectedException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import mgr.NetCayley;
 public class SynchronizationDistanceBMandTI {
 
 	static int ITER = 10000;
+	static int lambda = 10;
 	static double prob = 0.0;
 	static String model = "DEF"; // INF, DEF, BASIC
 	final static int distEnd = 3;
@@ -28,11 +30,11 @@ public class SynchronizationDistanceBMandTI {
 		DeffuantModelDynamics def = new DeffuantModelDynamics();
 
 		for (int dist = 1; dist <= distEnd; dist++) {
-			System.out.println("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ D I S T A N C E _ _ _ _ _ _ _ _ _ _ _ _ _");
+			System.out
+					.println("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ D I S T A N C E _ _ _ _ _ _ _ _ _ _ _ _ _");
 			System.out.println("Distance = " + dist);
 			for (int steep = 0; steep <= 4; steep++) {
 
-				HashMap<Integer, Integer> numberOfSameDistanceNets = new HashMap<>();
 				HashMap<Integer, Integer> numberOfOccurences = new HashMap<>();
 				HashMap<Integer, Integer> numberOfIterations = new HashMap<>();
 
@@ -41,29 +43,23 @@ public class SynchronizationDistanceBMandTI {
 				for (int iter = 0; iter < ITER; iter++) {
 
 					// System.out.println("Net number " + iter);
-					//NetBA net = new NetBA(25, 4)
+					// NetBA net = new NetBA(25, 4)
 					NetCayley net = new NetCayley(distEnd);
 					net.configureInformationModel(prob, steep * 1.0);
 					net.setTIdistBM(dist);
 					while (net.TI == -100) {
-						//net = new NetBA(25, 4);
+						// net = new NetBA(25, 4);
 						System.out.println("BLADDDDDDDD");
 						net.configureInformationModel(prob, steep * 1.0);
 						net.setTIdistBM(dist);
 					}
 
-					// counting same configuration nets
-					if (numberOfSameDistanceNets.containsKey(dist)) {
-						numberOfSameDistanceNets.replace(dist,
-								numberOfSameDistanceNets.get(dist) + 1);
-					} else {
-						numberOfSameDistanceNets.put(dist, 1);
-					}
-
-					Double dBasic = 10000.0;
+					// Double dBasic = 10000.0;
 					Double dTotal = 10000.0;
-
-					for (int i = 1; i < ITER; i++) {
+					ArrayList<Double> synchro_parameter = new ArrayList<Double>();
+					dTotalTemp = (double) lambda + 1;
+					int i = 0;
+					while (dTotalTemp > lambda) {
 
 						// System.out.println("	step = " + i);
 						if (model.equals("INF")) {
@@ -77,63 +73,58 @@ public class SynchronizationDistanceBMandTI {
 									.takeRandomNeighbors(net));
 						}
 
-						dBasicTemp = dyn.countBasicTotalSynchrony(net);
+						// dBasicTemp = dyn.countBasicTotalSynchrony(net);
 						dTotalTemp = dyn.countTotalSynchrony(net);
+						synchro_parameter.add(dTotalTemp);
 
-						if (dTotal - dTotalTemp < 0.1 && dTotalTemp < 5) {
-							// System.out.println("	Iterations for basic: " +
-							// i);
-							// System.out.println("	Distance BM - TI : " +
-							// dist);
+						if (synchro_parameter.size() > 1000) {
+							synchro_parameter = (ArrayList<Double>) synchro_parameter
+									.subList(synchro_parameter.size() - 1001,
+											synchro_parameter.size() - 1);
+							double stddev = def
+									.synchronStdDev(synchro_parameter);
+							if (stddev > 0.5) {
+								if (numberOfOccurences.containsKey(dist)) {
+									numberOfOccurences.replace(dist,
+											numberOfOccurences.get(dist) + 1);
+								} else {
+									numberOfOccurences.put(dist, 1);
+								}
 
-							if (numberOfOccurences.containsKey(dist)) {
-								numberOfOccurences.replace(dist,
-										numberOfOccurences.get(dist) + 1);
-							} else {
-								numberOfOccurences.put(dist, 1);
+								if (numberOfIterations.containsKey(dist)) {
+									numberOfIterations.replace(dist,
+											numberOfIterations.get(dist) + i);
+								} else {
+									numberOfIterations.put(dist, i);
+								}
+
+								break;
 							}
 
-							if (numberOfIterations.containsKey(dist)) {
-								numberOfIterations.replace(dist,
-										numberOfIterations.get(dist) + i);
-							} else {
-								numberOfIterations.put(dist, i);
-							}
-
-							break;
+							dTotal = dTotalTemp;
 						}
-						/*
-						 * if (dTotal - dTotalTemp < 0.1) {
-						 * System.out.println("	Iterations for total: " + i);
-						 * System.out.println("	Distance BM - TI : " +
-						 * net.distanceBM.get(net.TI)); break; }
-						 */
-
-						dBasic = dBasicTemp;
-						dTotal = dTotalTemp;
+						i++;
 					}
 
+					System.out.println("steep = " + steep + " distance: "
+							+ dist);
+					for (Map.Entry<Integer, Integer> entry : numberOfOccurences
+							.entrySet()) {
+						Integer key = entry.getKey();
+						System.out.print(key + "\t"
+								+ numberOfOccurences.get(key));
+
+					}
 				}
 
-				System.out.println("steep = " + steep + " distance: " + dist);
-				for (Map.Entry<Integer, Integer> entry : numberOfOccurences
-						.entrySet()) {
-					Integer key = entry.getKey();
-					System.out.print(key + "\t" + numberOfOccurences.get(key));
-					System.out.print("\t" + numberOfSameDistanceNets.get(key)
-							+ "\n");
-
-				}
+				/*
+				 * System.out.println("Iterations: "); for (Map.Entry<Integer,
+				 * Integer> entry : numberOfIterations.entrySet()) { Integer key
+				 * = entry.getKey(); Integer value = entry.getValue();
+				 * System.out.println("distance: " + key + " iterations: " +
+				 * value/numberOfOccurences.get(key)); }
+				 */
 			}
-
-			/*
-			 * System.out.println("Iterations: "); for (Map.Entry<Integer,
-			 * Integer> entry : numberOfIterations.entrySet()) { Integer key =
-			 * entry.getKey(); Integer value = entry.getValue();
-			 * System.out.println("distance: " + key + " iterations: " +
-			 * value/numberOfOccurences.get(key)); }
-			 */
 		}
 	}
-
 }

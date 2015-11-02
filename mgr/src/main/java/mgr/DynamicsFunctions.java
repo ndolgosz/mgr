@@ -313,6 +313,31 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 
 		return Tnk[kInd][nInd];
 	}
+	
+	private double T_nk(double k, double n, double[][] Tnk,double[] k_axis, double[] n_axis
+			) {
+		int nInd = -1;
+		int kInd = -1;
+
+		for (int i = 0; i < n_axis.length; i++) {
+			//System.out.println(n+" "+n_axis[i]);
+			if (n_axis[i] == n) {
+				nInd = i;
+				break;
+			}
+		}
+
+		for (int i = 0; i < k_axis.length; i++) {
+			//System.out.println(k+" "+k_axis[i]);
+			if (k_axis[i] == k) {
+				kInd = i;
+				
+				break;
+			}
+		}
+		
+		return Tnk[kInd][nInd];
+	}
 
 	private double H_nk(double n) {
 		double alpha = 0.5;
@@ -462,10 +487,10 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 	}
 	
 
-	public double B_n_steep(int n, double steep, double avK, double[][] Tnsteep, double[] n_axis,
+	public double B_n_steep(double n, double steep, double avK, double[][] Tnsteep, double[] n_axis,
 			double[] steep_axis, double kappa, double tau) {
 		return (H_nk(n) / n) - (kappa * avK)
-				- (tau * T_nk(steep, n, Tnsteep, steep_axis, n_axis) / n);
+				- (tau * T_nk(n, steep, Tnsteep, n_axis,steep_axis) / n);
 	}
 	
 	private double countAverageK(int n, String netName){
@@ -487,15 +512,18 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 		
 		double maxB = B_n_steep((int) n_axis[0], steep_axis[0], countAverageK((int) n_axis[0], netName), tab,n_axis,steep_axis, kappa, tau);
 		double[] optimum = new double[2];
-		for (double steep = steep_axis[0]; steep <= steep_axis[steep_axis.length - 1]; steep+=0.2) {
+		for (double steep : steep_axis) {
+			//System.out.println();
+			//System.out.println("STEEP : "+steep);
 			for (double n : n_axis) {
-				int n_int = (int) n;
+				//System.out.println("N : "+n);
 				
-				double bnk = B_n_steep(n_int, steep, countAverageK(n_int, netName), tab,n_axis,steep_axis, kappa, tau);
+				double bnk = B_n_steep(n, steep, countAverageK((int)n, netName), tab,n_axis,steep_axis, kappa, tau);
+				//System.out.println(bnk);
 				if (maxB < bnk) {
 					maxB = bnk;
-					optimum[0] = steep;
-					optimum[1] = n_int;
+					optimum[0] = (double) steep;
+					optimum[1] = (double) n;
 				}
 			}
 		}

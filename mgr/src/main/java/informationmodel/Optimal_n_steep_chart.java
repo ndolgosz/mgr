@@ -9,7 +9,7 @@ public class Optimal_n_steep_chart {
 	static int lambda = 10;
 	static double tau = 0.0001;
 	static double kappa = 0.002;
-	static double avK = 1;
+	
 	
 	static String netName = "BA";
 	

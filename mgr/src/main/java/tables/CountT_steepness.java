@@ -18,8 +18,8 @@ public class CountT_steepness {
 	private final int n_opt = 20;
 	private final double begSteep = 0.0;
 	private final double endSteep = 5.0;
-	private final double diff = 0.05;
-	private final int ITER = 1000;
+	private final double diff = 0.1;
+	private final int ITER = 5000;
 	public double[] Ts = new double[(int) (endSteep / diff) + 1];
 	private double[] steep_axis = new double[(int) (endSteep / diff) + 1];
 
@@ -50,21 +50,19 @@ public class CountT_steepness {
 				double ct = lambda + 1;
 				notSync = 0;
 				int i = 0;
-				while (ct > lambda && i < 10000) {
+				while (ct > lambda) {
 					dynamics.updateOpinions_InformationModel(net,
 							dynamics.takeRandomNeighbors(net));
 					ct = dynamics.countTotalSynchrony(net);
 					i++;
 				}
-				if(i < 10000){
+			
 				T = T + i - 1;
-				}
-				else
-					notSync++;
+
 			}
 			//System.out.println("Not synchronized = "+ notSync);
 			steep_axis[steep_iter] = steep;
-			Ts[steep_iter] = T / (ITER -notSync);
+			Ts[steep_iter] = T / (ITER);
 			steep = steep + diff;
 			steep_iter++;
 		}
@@ -87,7 +85,7 @@ public class CountT_steepness {
 
 	public static void main(String[] args) {
 		CountT_steepness T = new CountT_steepness(6);
-		T.countTsteepkMatrix(5, 0.0);
+		T.countTsteepkMatrix(10, 0.99);
 		
 		JFrame frame = new JFrame("a plot panel");
 		frame.getContentPane().add(T.createPlot());

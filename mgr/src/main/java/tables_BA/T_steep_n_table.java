@@ -19,15 +19,15 @@ import tables.TableInterpolation;
 
 public class T_steep_n_table {
 
-	private static final int ITER = 2000;
+	private static final int ITER = 50000;
 	private double prob;
 	private double lambda;
 	//private final static int avK = 3;
 	private double begSteep = 0.0;
 	private double endSteep = 5.0;
-	private int begN = 5;
-	private double diff = 0.2;
-	private int endN = 30;
+	private int begN = 20;
+	private double diff = 0.05;
+	private int endN = 20;
 
 	public double[] steep_axis = new double[(int) ((endSteep - begSteep) / diff + 1)];
 	public double[] n_axis = new double[endN - begN + 1];
@@ -143,7 +143,7 @@ public class T_steep_n_table {
 		PrintWriter writer = null;
 
 		writer = new PrintWriter(
-				"C:\\Users\\natdol\\workspace\\mgr\\mgr\\src\\main\\resources\\tables_BA\\Tsteepk_L"
+				"C:\\Users\\natdol\\workspace\\mgr\\mgr\\src\\main\\resources\\tables_BA\\Tsteep_L"
 						+ String.valueOf((int) lambda) + "_"
 						+ String.valueOf(prob) + ".txt");
 
@@ -181,8 +181,9 @@ public class T_steep_n_table {
 
 	public void readTnkFromFile(int lambda, double prob) {
 		InputStream in = getClass().getResourceAsStream(
-				"Tsteepn_L" + String.valueOf(lambda) + "_"
+				"Tsteep_L" + String.valueOf(lambda) + "_"
 						+ String.valueOf(prob).substring(0, 3) + ".txt");
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int i = 0;
 		try {
