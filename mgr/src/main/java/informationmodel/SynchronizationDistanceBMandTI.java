@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
 
+import mgr.Agent;
 import mgr.DeffuantModelDynamics;
 import mgr.DynamicsFunctions;
 import mgr.Net;
@@ -16,49 +17,62 @@ import mgr.NetCayley;
 public class SynchronizationDistanceBMandTI {
 
 	static int ITER = 10000;
-	static int lambda = 10;
+	static int lambda = 8;
 	static double prob = 0.0;
 	static String model = "DEF"; // INF, DEF, BASIC
 	final static int distEnd = 3;
 
+	private static void printAgentsOpinions(HashMap<Integer, Agent> map) {
+		
+		System.out.println("\nAgents opionions");
+		for (Map.Entry<Integer, Agent> entry : map.entrySet()) {
+			System.out.print(entry.getValue().getOpinion() + " ");
+		}
+		System.out.println();
+	}
+	
+	private static void printSynchroParam(ArrayList<Double> list) {
+		
+		System.out.println("\nSynchro param");
+		for (Double elem : list) {
+			System.out.print(String.valueOf(elem) + " ");
+		}
+		System.out.println();
+	}
+
 	public static void main(String[] args) throws UnexpectedException {
 
-		Double dBasicTemp;
 		Double dTotalTemp;
 
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		DeffuantModelDynamics def = new DeffuantModelDynamics();
-
+		System.out.println("steep\tdist\tnumberOfNotSynchronized\t prob = "+prob) ;
 		for (int dist = 1; dist <= distEnd; dist++) {
-			System.out
-					.println("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ D I S T A N C E _ _ _ _ _ _ _ _ _ _ _ _ _");
-			System.out.println("Distance = " + dist);
+			//System.out
+					//.println("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ D I S T A N C E _ _ _ _ _ _ _ _ _ _ _ _ _");
+			//System.out.println("Distance = " + dist);
 			for (int steep = 0; steep <= 4; steep++) {
 
 				HashMap<Integer, Integer> numberOfOccurences = new HashMap<>();
-				HashMap<Integer, Integer> numberOfIterations = new HashMap<>();
 
-				System.out.println("-----------------------------------------");
-				System.out.println("Steepness = " + steep);
+				//System.out.println("-----------------------------------------");
+				//System.out.println("Steepness = " + steep);
 				for (int iter = 0; iter < ITER; iter++) {
 
-					// System.out.println("Net number " + iter);
 					// NetBA net = new NetBA(25, 4)
 					NetCayley net = new NetCayley(distEnd);
 					net.configureInformationModel(prob, steep * 1.0);
 					net.setTIdistBM(dist);
-					while (net.TI == -100) {
-						// net = new NetBA(25, 4);
-						System.out.println("BLADDDDDDDD");
-						net.configureInformationModel(prob, steep * 1.0);
-						net.setTIdistBM(dist);
-					}
+					// while (net.TI == -100) {
+					// // net = new NetBA(25, 4);
+					// System.out.println("BLADDDDDDDD");
+					// net.configureInformationModel(prob, steep * 1.0);
+					// net.setTIdistBM(dist);
+					// }
 
-					// Double dBasic = 10000.0;
-					Double dTotal = 10000.0;
 					ArrayList<Double> synchro_parameter = new ArrayList<Double>();
 					dTotalTemp = (double) lambda + 1;
-					int i = 0;
+
 					while (dTotalTemp > lambda) {
 
 						// System.out.println("	step = " + i);
@@ -67,7 +81,8 @@ public class SynchronizationDistanceBMandTI {
 									def.takeRandomNeighbors(net));
 						} else if (model.equals("DEF")) {
 							def.updateOpinions_DeffuantModel(net,
-									def.takeRandomNeighbors(net), 180);
+									def.takeRandomNeighbors(net), 180); // prob
+																		// = 3/4
 						} else if (model.equals("BASIC")) {
 							dyn.updateOpinions_BasicModel(def
 									.takeRandomNeighbors(net));
@@ -78,43 +93,35 @@ public class SynchronizationDistanceBMandTI {
 						synchro_parameter.add(dTotalTemp);
 
 						if (synchro_parameter.size() > 1000) {
-							synchro_parameter = (ArrayList<Double>) synchro_parameter
-									.subList(synchro_parameter.size() - 1001,
-											synchro_parameter.size() - 1);
+							synchro_parameter.remove(0);
+
 							double stddev = def
 									.synchronStdDev(synchro_parameter);
-							if (stddev > 0.5) {
+							if (stddev < 0.00000001) {
+								
+								//printAgentsOpinions(net.agentsVertices);
+								//printSynchroParam(synchro_parameter);
+
 								if (numberOfOccurences.containsKey(dist)) {
 									numberOfOccurences.replace(dist,
 											numberOfOccurences.get(dist) + 1);
 								} else {
 									numberOfOccurences.put(dist, 1);
 								}
-
-								if (numberOfIterations.containsKey(dist)) {
-									numberOfIterations.replace(dist,
-											numberOfIterations.get(dist) + i);
-								} else {
-									numberOfIterations.put(dist, i);
-								}
-
 								break;
 							}
-
-							dTotal = dTotalTemp;
 						}
-						i++;
 					}
 
-					System.out.println("steep = " + steep + " distance: "
-							+ dist);
-					for (Map.Entry<Integer, Integer> entry : numberOfOccurences
-							.entrySet()) {
-						Integer key = entry.getKey();
-						System.out.print(key + "\t"
-								+ numberOfOccurences.get(key));
+
 
 					}
+
+				for (Map.Entry<Integer, Integer> entry : numberOfOccurences
+						.entrySet()) {
+					Integer key = entry.getKey();
+					System.out.print("\n" + steep + "\t" + key + "\t"
+							+ numberOfOccurences.get(key));
 				}
 
 				/*

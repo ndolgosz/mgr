@@ -17,7 +17,7 @@ import mgr.NetCayley;
 public class CountT_steepness_prob {
 
 	private final int k;
-	private final int n_opt = 20;
+	private final int n_opt = 19;
 	private final double begSteep = 0.0;
 	private final double endSteep = 5.0;
 	private final double diff = 0.1;
@@ -40,35 +40,30 @@ public class CountT_steepness_prob {
 		while (steep_iter <= (int) endSteep / diff) {
 			
 			//System.out.println("   Counting for steep: "+steep_iter);
-			int notSync = 0;
+			
 			double T = 0;
 			// usrednianie
 			for (int run = 1; run <= ITER; run++) {
-				
-				//NetCayley net = new NetCayley(4);				
-				NetBA net = new NetBA(25);
+					
+				NetBA net = new NetBA(n_opt);
 				net.configureInformationModel(prob, steep);
 				net.setBMtoCenter();
 				
 				double ct = lambda + 1;
-				notSync = 0;
+				
 				int i = 0;
-				while (ct > lambda){ //&& i < 10000) {
+				while (ct > lambda){ 
 					dynamics.updateOpinions_InformationModel(net,
 							dynamics.takeRandomNeighbors(net));
 					ct = dynamics.countTotalSynchrony(net);
 					i++;
 				}
 				T=T+i;
-				/*if(i < 10000){
-				T = T + i - 1;
-				}
-				else
-					notSync++;*/
+
 			}
-			//System.out.println("Not synchronized = "+ notSync);
+		
 			steep_axis[steep_iter] = steep;
-			Ts[steep_iter] = T / (ITER -notSync);
+			Ts[steep_iter] = T / (ITER);
 			steep = steep + diff;
 			steep_iter++;
 		}

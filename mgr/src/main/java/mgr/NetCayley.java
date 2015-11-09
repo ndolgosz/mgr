@@ -43,10 +43,6 @@ public class NetCayley {
 		}
 		numVertices = getMaxIdFromLeafs();
 		
-
-		System.out.println(deep+" "+k+" "+numVertices);
-
-		
 		this.copyOfAgents = getMapOfOpinions();
 
 	}

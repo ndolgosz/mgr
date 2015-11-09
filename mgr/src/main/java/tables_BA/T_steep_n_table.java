@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 import mgr.DynamicsFunctions;
@@ -19,10 +20,9 @@ import tables.TableInterpolation;
 
 public class T_steep_n_table {
 
-	private static final int ITER = 50000;
+	private static final int ITER = 10;
 	private double prob;
 	private double lambda;
-	//private final static int avK = 3;
 	private double begSteep = 0.0;
 	private double endSteep = 5.0;
 	private int begN = 20;
@@ -141,17 +141,22 @@ public class T_steep_n_table {
 	public void saveTMatrixToFile() throws FileNotFoundException {
 
 		PrintWriter writer = null;
+		
+		String fileEnd = "n";
+		if(endN-begN == 0){
+			fileEnd = "";
+		}
 
 		writer = new PrintWriter(
-				"C:\\Users\\natdol\\workspace\\mgr\\mgr\\src\\main\\resources\\tables_BA\\Tsteep_L"
+				"C:\\Users\\natdol\\workspace\\mgr\\mgr\\src\\main\\resources\\tables_BA\\Tsteep"+fileEnd+"_L"
 						+ String.valueOf((int) lambda) + "_"
-						+ String.valueOf(prob) + ".txt");
+						+  new DecimalFormat("#.#").format(prob).replace(",", ".") + ".txt");
 
 		for (int i = 0; i < steep_axis.length; i++) {
 			if (i != steep_axis.length - 1) {
-				writer.print(steep_axis[i] + " ");
+				writer.print( new DecimalFormat("#.#").format(steep_axis[i]).replace(",", ".") + " ");
 			} else {
-				writer.print(steep_axis[i] + "\n");
+				writer.print(new DecimalFormat("#.#").format(steep_axis[i]).replace(",", ".") + "\n");
 			}
 		}
 		for (int i = 0; i < n_axis.length; i++) {
@@ -182,7 +187,7 @@ public class T_steep_n_table {
 	public void readTnkFromFile(int lambda, double prob) {
 		InputStream in = getClass().getResourceAsStream(
 				"Tsteep_L" + String.valueOf(lambda) + "_"
-						+ String.valueOf(prob).substring(0, 3) + ".txt");
+						+ new DecimalFormat("#.#").format(prob).replace(",", ".") + ".txt");
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int i = 0;

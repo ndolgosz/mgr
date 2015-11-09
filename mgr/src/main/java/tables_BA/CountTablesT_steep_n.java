@@ -17,8 +17,7 @@ public class CountTablesT_steep_n {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-		}
-			
+		}			
 		System.out.println("End!");
 
 	}
