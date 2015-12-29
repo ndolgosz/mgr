@@ -6,7 +6,7 @@ import tables_BA.T_steep_n_table;
 
 public class Optimal_n_steep_chart {
 
-	static int lambda = 10;
+	static int lambda = 8;
 	static double tau = 0.0001;
 	static double kappa = 0.002;
 	
@@ -18,11 +18,14 @@ public class Optimal_n_steep_chart {
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		T_steep_n_table Tsk = new T_steep_n_table(0);
 		System.out.println("STEEP" + " " + "N");
-		Tsk.readTnkFromFile(lambda, 0.0);
-		double[] d = dyn.optimalGroup_steep_n(Tsk, kappa, tau, netName);
-		System.out.println(d[0] + " " + d[1]);
+		double[] wektor = {0 , 0.1, 0.2, 0.3, 0.4, 0.5 ,0.6, 0.7, 0.8, 0.9, 1};
+		for (double l : wektor){
+			Tsk.readTnkFromFile(lambda, l,"");
+			double[] d = dyn.optimalGroup_steep_n(Tsk, kappa, tau, netName);
+			System.out.println(d[0] + " " + d[1]);
+		}
 
-		Tsk.readTnkFromFile(lambda, 0.1);
+/*		Tsk.readTnkFromFile(lambda, 0.1,"n");
 		d = dyn.optimalGroup_steep_n(Tsk, kappa, tau, netName);
 		System.out.println(d[0] + " " + d[1]);
 		
@@ -54,7 +57,7 @@ public class Optimal_n_steep_chart {
 		System.out.println(d[0] + " " + d[1]);
 		Tsk.readTnkFromFile(lambda, 1.0);
 		d = dyn.optimalGroup_steep_n(Tsk, kappa, tau, netName);
-		System.out.println(d[0] + " " + d[1]);
+		System.out.println(d[0] + " " + d[1]);*/
 		
 
 	}

@@ -17,7 +17,7 @@ import mgr.NetCayley;
 public class SynchronizationDistanceBMandTI {
 
 	static int ITER = 10000;
-	static int lambda = 8;
+	static int lambda = 10;
 	static double prob = 0.0;
 	static String model = "DEF"; // INF, DEF, BASIC
 	final static int distEnd = 3;
@@ -51,7 +51,7 @@ public class SynchronizationDistanceBMandTI {
 			//System.out
 					//.println("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ D I S T A N C E _ _ _ _ _ _ _ _ _ _ _ _ _");
 			//System.out.println("Distance = " + dist);
-			for (int steep = 0; steep <= 4; steep++) {
+			for (int steep = 4; steep <= 6; steep++) {
 
 				HashMap<Integer, Integer> numberOfOccurences = new HashMap<>();
 

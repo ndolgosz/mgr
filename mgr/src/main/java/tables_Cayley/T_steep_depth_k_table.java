@@ -29,7 +29,7 @@ public class T_steep_depth_k_table {
 	private double endSteep = 2.0;
 	private int begD = 2;
 	private double diff = 0.2;
-	private int endD = 3;
+	private int endD = 4;
 	private int begK = 2;
 	private int endK = 4;
 

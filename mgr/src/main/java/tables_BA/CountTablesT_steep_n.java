@@ -10,7 +10,7 @@ public class CountTablesT_steep_n {
 		for (double prob = 0.0; prob <= 1.0; prob += 0.1) {
 			System.out.println("\tprobability = "+prob);
 			
-			T_steep_n_table T = new T_steep_n_table(prob,10);
+			T_steep_n_table T = new T_steep_n_table(prob);
 			T.countTsteepkMatrix();
 			try {
 				T.saveTMatrixToFile();

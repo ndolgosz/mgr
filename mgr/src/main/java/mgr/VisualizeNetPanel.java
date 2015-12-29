@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
+import java.rmi.UnexpectedException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -43,7 +44,7 @@ public class VisualizeNetPanel extends JPanel {
 	private Layout<Integer, String> mVisualizer;
 	private VisualizationViewer<Integer, String> mVizViewer;
 	// public static Net net;
-	public static NetBA net;
+	public static NetCayley net;
 
 	// public static NetBA net;
 
@@ -62,13 +63,21 @@ public class VisualizeNetPanel extends JPanel {
 	protected void restart() {
 
 		/* -------------- SETTINGS 1 ----------------------- */
-		 net = new NetBA(25);
-		//net = new NetCayley(3,5);
+		 //net = new NetBA(25);
+		net = new NetCayley(3);
+		
+	
 
 		/* -------------- SETTINGS 2 ----------------------- */
 
 		net.configureInformationModel(0.0, 2);
 		net.setBMtoCenter();
+		try {
+			net.setTIdistBM(2);
+		} catch (UnexpectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		System.out.println(net.numVertices);
 		System.out.println(net.BM);

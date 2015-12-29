@@ -21,7 +21,7 @@ public class CountT_steepness_prob {
 	private final double begSteep = 0.0;
 	private final double endSteep = 5.0;
 	private final double diff = 0.1;
-	public final int ITER = 10000;
+	public final int ITER = 100;
 	public double[] Ts = new double[(int) (endSteep / diff) + 1];
 	private double[] steep_axis = new double[(int) (endSteep / diff) + 1];
 

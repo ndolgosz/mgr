@@ -16,8 +16,9 @@ import mgr.NetCayley;
 
 public class CountT_steepness_prob {
 
-	private final int k;
+	
 	private final int n_opt = 19;
+	private final int lambda = 8;
 	private final double begSteep = 0.0;
 	private final double endSteep = 5.0;
 	private final double diff = 0.1;
@@ -25,11 +26,11 @@ public class CountT_steepness_prob {
 	public double[] Ts = new double[(int) (endSteep / diff) + 1];
 	private double[] steep_axis = new double[(int) (endSteep / diff) + 1];
 
-	public CountT_steepness_prob(int k) {
-		this.k = k;
+	public CountT_steepness_prob() {
+	
 	}
 
-	public void countTsteepkMatrix(int lambda, double prob) {
+	public void countTsteepkMatrix(double prob) {
 		DynamicsFunctions dynamics = new DynamicsFunctions();
 
 		//System.out.println("Building T(steep,k) plot: ITER=" + ITER
@@ -59,7 +60,6 @@ public class CountT_steepness_prob {
 					i++;
 				}
 				T=T+i;
-
 			}
 		
 			steep_axis[steep_iter] = steep;
@@ -92,8 +92,8 @@ public class CountT_steepness_prob {
 		int i = 0;
 		for(double prob = 0.0; prob <= 1.0; prob = prob + 0.25){ 
 			System.out.println("Counting for prob: "+prob);
-			CountT_steepness_prob T = new CountT_steepness_prob(6);
-			T.countTsteepkMatrix(20, prob);
+			CountT_steepness_prob T = new CountT_steepness_prob();
+			T.countTsteepkMatrix(prob);
 			matrix[i] = T.Ts;
 			i++;
 		}

@@ -25,9 +25,9 @@ public class T_steep_n_table {
 	private double lambda;
 	private double begSteep = 0.0;
 	private double endSteep = 5.0;
-	private int begN = 20;
+	private int begN = 5;
 	private double diff = 0.05;
-	private int endN = 20;
+	private int endN = 25;
 
 	public double[] steep_axis = new double[(int) ((endSteep - begSteep) / diff + 1)];
 	public double[] n_axis = new double[endN - begN + 1];
@@ -42,7 +42,7 @@ public class T_steep_n_table {
 	}
 
 	public T_steep_n_table(double prob) {
-		this.lambda = 20;
+		this.lambda = 8;
 		this.prob = prob;
 		setNKaxes();
 	}
@@ -184,11 +184,13 @@ public class T_steep_n_table {
 
 	}
 
-	public void readTnkFromFile(int lambda, double prob) {
+	public void readTnkFromFile(int lambda, double prob, String endFile) {
 		InputStream in = getClass().getResourceAsStream(
-				"Tsteep_L" + String.valueOf(lambda) + "_"
+				"Tsteep"+endFile+"_L" + String.valueOf(lambda) + "_"
 						+ new DecimalFormat("#.#").format(prob).replace(",", ".") + ".txt");
 		
+		//System.out.println("Tsteep"+endFile+"_L" + String.valueOf(lambda) + "_"
+					//	+ new DecimalFormat("#.#").format(prob).replace(",", ".") + ".txt");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int i = 0;
 		try {
