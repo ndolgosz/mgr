@@ -9,7 +9,7 @@ public class Optimal_steep_dk_chart {
 
 	static int lambda = 8;
 	static double tau = 0.0001; //koszt nawi¹zania po³¹czenia - komunikacji
-	static double kappa = 0.0001;//koszt utrzymania znajomosci
+	static double kappa = 0.000000000001;//koszt utrzymania znajomosci
 
 	public static void main(String[] args) {
 		DynamicsFunctions dyn = new DynamicsFunctions();
@@ -20,7 +20,7 @@ public class Optimal_steep_dk_chart {
 		for (double l : wektor) {
 			Tsk.readTnkFromFile(lambda, l);
 			double[] d = dyn.optimalGroup_steep_dk(Tsk, kappa, tau);
-			System.out.println("prob: "+l + " " + d[0] + " " + d[1]+ " " + d[2]);
+			System.out.println("prob: "+l + " " + d[0] + " " + d[1]+ " " + (d[2]-1));
 		}
 	}
 

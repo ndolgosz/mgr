@@ -9,7 +9,7 @@ import tables_BA.T_steep_n_table;
 public class Optimal_n_steep_chart {
 
 	static int lambda = 10;
-	static double tau = 0.0001;
+	static double tau = 0.001;
 	static double kappa = 0.0001;
 	
 	
@@ -22,7 +22,7 @@ public class Optimal_n_steep_chart {
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		T_steep_n_table Tsk = new T_steep_n_table(0);
 		System.out.println("STEEP" + " " + "N");
-		double[] wektor = {0 , 0.1, 0.2, 0.3, 0.4, 0.5 ,0.6, 0.7, 0.8, 0.9, 1};
+		double[] wektor = {0 , 0.2, 0.4, 0.6, 0.8, 1};
 		for (double l : wektor){
 			Tsk.readTnkFromFile(lambda, l,"n");
 			double[] d = dyn.optimalGroup_steep_n(Tsk, kappa, tau, netName);
