@@ -45,7 +45,12 @@ public class Agent {
     }
 
 	public void countWeight(NetCayley netCayley) {
-		 weight = Math.pow((1.0 / (netCayley.distanceBM.get(vertex).doubleValue() + 1.0)), netCayley.steepness);
+		 this.weight = Math.pow((1.0 / (netCayley.distanceBM.get(vertex).doubleValue() + 1.0)), netCayley.steepness);
+		
+	}
+	
+	public void setWeight(double w) {
+		 this.weight = w;
 		
 	}
 

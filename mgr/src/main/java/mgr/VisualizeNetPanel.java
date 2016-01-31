@@ -12,7 +12,10 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.rmi.UnexpectedException;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
+import javax.naming.directory.InvalidAttributesException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -27,6 +30,7 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.TreeLayout;
 import edu.uci.ics.jung.graph.Forest;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.renderers.Renderer.Vertex;
@@ -43,10 +47,11 @@ public class VisualizeNetPanel extends JPanel {
 
 	private Layout<Integer, String> mVisualizer;
 	private VisualizationViewer<Integer, String> mVizViewer;
-	// public static Net net;
+	//public static Net net;
+	//public static Net net;
 	public static NetCayley net;
-
-	// public static NetBA net;
+	
+	public static String interaction = "DEF"; // "INF", "BASIC"
 
 	public VisualizeNetPanel() {
 		restart();
@@ -63,25 +68,27 @@ public class VisualizeNetPanel extends JPanel {
 	protected void restart() {
 
 		/* -------------- SETTINGS 1 ----------------------- */
-		 //net = new NetBA(25);
+		// net = new NetBA(20);
 		net = new NetCayley(3);
+		//net = new Net(20,4);
 		
 	
 
 		/* -------------- SETTINGS 2 ----------------------- */
 
-		net.configureInformationModel(0.0, 2);
+		if(!interaction.equals("BASIC")){
+		net.configureInformationModel(0.0, 1.0);
+		
 		net.setBMtoCenter();
-		try {
-			net.setTIdistBM(2);
-		} catch (UnexpectedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		System.out.println(net.numVertices);
-		System.out.println(net.BM);
-		System.out.println(net.TI);
+
+		//try {
+		//	net.setTIdistBM(2);
+		//} catch (UnexpectedException e) {
+			
+		//	e.printStackTrace();
+		//}
+		}
 		for (Integer node : net.net.getVertices()) {
 			System.out.println(node);
 		}
@@ -198,13 +205,22 @@ public class VisualizeNetPanel extends JPanel {
 		double synchrony = 0.0;
 		for (int i = 0; i < iter; i++) {
 			Agent[] agents = def.takeRandomNeighbors(net);
-			if (net.TI == -1) {
+			if (net.TI == -1 && interaction.equals("BASIC")) {
 				dyn.updateOpinions_BasicModel(agents);
-			} else {
-
-				/* SET DYNAMICS ------------------------- */
-				// dyn.updateOpinions_InformationModel(net,agents);
+			} 
+			else if(net.TI > 0 && interaction.equals("DEF")){
+				
 				def.updateOpinions_DeffuantModel(net, agents, 180);
+			}
+			else if(net.TI > 0 && interaction.equals("INF")){			
+				dyn.updateOpinions_InformationModel(net,agents);
+			}	
+			else {
+				try {
+					throw new InvalidAttributesException();
+				} catch (InvalidAttributesException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		if (net.TI == -1) {

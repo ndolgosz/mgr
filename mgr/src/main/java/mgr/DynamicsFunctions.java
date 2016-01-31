@@ -23,6 +23,7 @@ public class DynamicsFunctions {
 		} else
 			j = i;
 		Agent[] agents = { net.agentsVertices.get(i), net.agentsVertices.get(j) };
+		
 		return agents;
 	}
 	
@@ -83,6 +84,7 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 		if (agent1.getOpinion() < 0 || agent1.getOpinion() > 360) {
 			throw new IllegalArgumentException();
 		}
+		System.out.println(agent1.getOpinion());
 	}
 
 	public void updateOpinions_InformationModel(Net net, Agent[] agents) {
@@ -262,7 +264,7 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 		double ct = 0;
 		for (int i = 1; i <= net.numVertices; i++) {
 			double iOp = net.agentsVertices.get(i).getOpinion();
-			ct = ct + Math.abs(iOp - tiOp);
+			ct = ct + Math.abs(iOp - tiOp);		
 		}
 		ct = ct / (net.numVertices);
 		return ct;

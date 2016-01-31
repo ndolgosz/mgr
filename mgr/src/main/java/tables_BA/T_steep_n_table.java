@@ -109,8 +109,8 @@ public class T_steep_n_table {
 
 		Plot3DPanel plot = new Plot3DPanel();
 		plot.addGridPlot("T(steepness,n)", steep_axis, n_axis, T_fun);
-		plot.addGridPlot("interpolation", steep_axis, n_axis, TableInterpolation
-				.interpolatePlot2D(n_axis, steep_axis, functionInterpolated));
+	//	plot.addGridPlot("interpolation", steep_axis, n_axis, TableInterpolation
+	//			.interpolatePlot2D(n_axis, steep_axis, functionInterpolated));
 		plot.setAxisLabels("steepness", "n", "T(steepness,n)");
 		plot.setFixedBounds(2, 100, 1000);
 		

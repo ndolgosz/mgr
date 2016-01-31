@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
+import mgr.Agent;
+import mgr.DeffuantModelDynamics;
 import mgr.DynamicsFunctions;
 import mgr.Net;
 
@@ -16,13 +18,13 @@ import org.math.plot.Plot3DPanel;
 
 public class T_steep_k_table {
 
-	private static final int ITER = 500;
+	private static final int ITER = 10000;
 	private double prob;
 	private double lambda;
 	private final static int n_opt = 20;
 	private double begSteep = 0.0;
 	private double endSteep = 3.0;
-	private int begK = 2;
+	private int begK = 3;
 	private double diff = 0.2;
 	private int endK = n_opt - 1;
 
@@ -39,38 +41,41 @@ public class T_steep_k_table {
 	}
 
 	public T_steep_k_table(double prob) {
-		this.lambda = 60;
+		this.lambda = 30;
 		this.prob = prob;
 		setNKaxes();
 	}
 
 	public void countTsteepkMatrix() {
 		DynamicsFunctions dynamics = new DynamicsFunctions();
-
+		DeffuantModelDynamics deff = new DeffuantModelDynamics();
 		System.out.println("Building T(steep,k) plot: ITER=" + ITER
 				+ " lambda: " + lambda);
 		int k = begK;
 
 		while (k <= endK) {
-			// System.out.println("\tFor k = " + k);
+			System.out.println("\tFor k = " + k);
 
 			double steep = begSteep;
 			int steep_iter = 0;
 			while (steep_iter <= (int) endSteep / diff) {
-				// System.out.println("For steepness = " + steep);
+				//System.out.println("For steepness = " + steep);
 
 				double T = 0;
 				// usrednianie
+				
 				for (int run = 1; run <= ITER; run++) {
 					Net net = new Net(n_opt, k);
 					net.configureInformationModel(prob, steep);
 					double ct = lambda + 1;
 
 					int i = 0;
-					while (ct > lambda && i < 800) {
-						dynamics.updateOpinions_InformationModel(net,
-								dynamics.takeRandomNeighbors(net));
+					while (ct > lambda && i < 1000) {
+						Agent[] agents = deff.takeRandomNeighbors(net);
+			
+						dynamics.updateOpinions_InformationModel(net,agents);
 						ct = dynamics.countTotalSynchrony(net);
+						
 						i++;
 					}
 					T = T + i - 1;
@@ -87,7 +92,7 @@ public class T_steep_k_table {
 	}
 
 	private void interpolateGraph() {
-
+		
 		functionInterpolated = TableInterpolation.getInterpolatedFunction(
 				k_axis, steep_axis, T_fun);
 
@@ -131,7 +136,7 @@ public class T_steep_k_table {
 		PrintWriter writer = null;
 
 		writer = new PrintWriter(
-				"/home/natalia/mgr/mgr/src/main/resources/mgr/Tsteepk_L"
+				"C:\\Users\\natdol\\workspace\\mgr\\mgr\\src\\main\\resources\\tables\\Tsteepk_L"
 						+ String.valueOf((int) lambda) + "_"
 						+ String.valueOf(prob) + ".txt");
 

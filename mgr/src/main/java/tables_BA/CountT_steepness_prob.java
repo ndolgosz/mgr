@@ -18,7 +18,7 @@ public class CountT_steepness_prob {
 
 	
 	private final int n_opt = 19;
-	private final int lambda = 8;
+	private final int lambda = 9;
 	private final double begSteep = 0.0;
 	private final double endSteep = 5.0;
 	private final double diff = 0.1;

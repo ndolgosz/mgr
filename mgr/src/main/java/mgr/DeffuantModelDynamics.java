@@ -65,6 +65,7 @@ public class DeffuantModelDynamics {
 
 		int TI = net.TI;
 		
+		
 		Agent agent1 = agents[0];
 		Agent agent2 = agents[1];
 		

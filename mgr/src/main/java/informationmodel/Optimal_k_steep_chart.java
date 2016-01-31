@@ -5,9 +5,9 @@ import tables.T_steep_k_table;
 
 public class Optimal_k_steep_chart {
 
-	static int lambda = 20;
-	static double tau = 0.0001;
-	static double kappa = 0.002;
+	static int lambda = 30;
+	static double tau = 0.0002;
+	static double kappa = 0.0001;
 	static double cost = 1;
 	
 	public static void main(String[] args) {

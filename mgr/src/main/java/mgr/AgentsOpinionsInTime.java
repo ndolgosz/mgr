@@ -10,15 +10,15 @@ import org.math.plot.Plot2DPanel;
 
 public class AgentsOpinionsInTime {
 
-	static int ITER = 10000;
+	static int ITER = 3000;
 	static double prob = 0.0;
 	static double steep = 1.0;
 	static String model = "DEF"; // INF, DEF, BASIC
 	
 	public static void main(String[] args) {
 
-		NetBA net = new NetBA(20);
-		net.configureInformationModel(prob, steep);
+		Net net = new Net(100, 99);
+		//net.configureInformationModel(prob, steep);
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		DeffuantModelDynamics def = new DeffuantModelDynamics();
 		HashMap<Integer, double[]> mapOpinions = new HashMap<>();
@@ -37,7 +37,7 @@ public class AgentsOpinionsInTime {
 				dyn.updateOpinions_InformationModel(net,dyn.takeRandomNeighbors(net));
 			}
 			else if(model.equals("DEF")){
-				def.updateOpinions_DeffuantModel(net, dyn.takeRandomNeighbors(net),180);
+				def.updateOpinions_DeffuantModel(net, dyn.takeRandomNeighbors(net),45);
 			}
 			else if(model.equals("BASIC")){
 				dyn.updateOpinions_BasicModel(dyn.takeRandomNeighbors(net));
@@ -45,6 +45,7 @@ public class AgentsOpinionsInTime {
 
 			for (int j : net.agentsVertices.keySet()) {
 				mapOpinions.get(j)[i] = net.agentsVertices.get(j).getOpinion();
+				
 			}
 
 		}

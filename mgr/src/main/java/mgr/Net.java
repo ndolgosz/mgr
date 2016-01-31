@@ -37,6 +37,7 @@ public class Net {
             updateGraph();
         }
         this.copyOfAgents = getMapOfOpinions();
+        setEqualWeightsToEveryAgent(0.5);
 
     }
     
@@ -170,6 +171,12 @@ public class Net {
     private void setWeightsToEveryAgent() {
         for (int j = 1; j <= numVertices; j++) {
             agentsVertices.get(j).countWeight(this);
+        }
+    }
+    
+    private void setEqualWeightsToEveryAgent(double w) {
+        for (int j = 1; j <= numVertices; j++) {
+            agentsVertices.get(j).setWeight(w);;
         }
     }
 

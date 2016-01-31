@@ -17,8 +17,8 @@ import tables.T_steep_k_table;
 
 public class ChangingCommunicationCostGraph {
 
-	static int lambda = 15;
-	static double tau = 0.001;
+	static int lambda = 30;
+	static double tau = 0.002;
 	static double kappa =  0.001;
 	static int probSize = 11;
 

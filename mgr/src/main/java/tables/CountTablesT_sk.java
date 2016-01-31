@@ -7,10 +7,10 @@ public class CountTablesT_sk {
 
 		System.out.println("Started counting T(steep,k) tables:");
 			
-		for (double prob = 0.0; prob <= 1.0; prob += 0.1) {
+		for (double prob = 0.7; prob <= 0.9; prob += 0.1) {
 			System.out.println("\tprobability = "+prob);
 			
-			T_steep_k_table T = new T_steep_k_table(prob,10);
+			T_steep_k_table T = new T_steep_k_table(prob,30);
 			T.countTsteepkMatrix();
 			try {
 				T.saveTMatrixToFile();

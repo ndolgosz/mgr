@@ -21,12 +21,12 @@ import tables.TableInterpolation;
 
 public class T_steep_depth_k_table {
 
-	private static final int ITER = 10;
+	private static final int ITER = 10000;
 	private double prob;
 	private double lambda;
 	// private final static int avK = 3;
 	private double begSteep = 0.0;
-	private double endSteep = 2.0;
+	private double endSteep = 5.0;
 	private int begD = 2;
 	private double diff = 0.2;
 	private int endD = 4;
@@ -87,6 +87,9 @@ public class T_steep_depth_k_table {
 									dynamics.takeRandomNeighbors(net));
 							ct = dynamics.countTotalSynchrony(net);
 							i++;
+							if( i >= 10000){
+								break;
+							}
 						}
 						T = T + i - 1;
 					}

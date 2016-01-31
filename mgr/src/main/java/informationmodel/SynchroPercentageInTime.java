@@ -23,10 +23,10 @@ import mgr.NetCayley;
 public class SynchroPercentageInTime {
 
 	static int ITER = 10000;
-	static int TIME = 100000;
+	static int TIME = 15000;
 	static int lambda = 5;
 	static double prob = 0.0;
-	static String model = "DEF"; // INF, DEF, BASIC
+	static String model = "INF"; // INF, DEF, BASIC
 	final static int distEnd = 3;
 
 	private static void printAgentsOpinions(HashMap<Integer, Agent> map) {
@@ -60,6 +60,22 @@ public class SynchroPercentageInTime {
 		}
 		return sumSynch * 1.0 / (1.0 * net.numVertices);
 	}
+	
+	private static double countNumberOfSynchronizedAgents(Net net) {
+
+		double opTI = net.agentsVertices.get(net.TI).getOpinion();
+		int sumSynch = 0;
+		for (Map.Entry<Integer, Agent> entry : net.agentsVertices.entrySet()) {
+			double agOp = entry.getValue().getOpinion();
+			// System.out.println(opTI);
+			if (Math.abs(agOp - opTI) < 0.01) {
+				sumSynch++;
+			}
+		}
+		return sumSynch * 1.0 / (1.0 * net.numVertices);
+	}
+	
+
 
 	private static double countNumberOfSynchronizedAgents(NetBA net) {
 
@@ -99,34 +115,35 @@ public class SynchroPercentageInTime {
 	public static void main(String[] args) throws UnexpectedException {
 
 		double[] time = new double[TIME];
-		double[] number_of_followers = new double[TIME];
+		double[] number_of_followers_TI = new double[TIME];
 		Plot2DPanel plot = new Plot2DPanel();
 
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		DeffuantModelDynamics def = new DeffuantModelDynamics();
 		System.out.println("steep\tdist\tnumberOfNotSynchronized\t prob = "
 				+ prob);
-		// int dist = 3;
-		int steep = 0;
-		for (int dist = 1; dist <= distEnd; dist++) {
-			number_of_followers = new double[TIME];
+		//int dist = 3;
+		int steep = 2;
+		for (int dist = distEnd; dist <= distEnd; dist++) {
+			number_of_followers_TI = new double[TIME];
+			
 			for (int iter = 0; iter < ITER; iter++) {
 
-				// NetBA net = new NetBA(20);
-				NetCayley net = new NetCayley(distEnd);
+				Net net = new Net(20,4);
+				//NetCayley net = new NetCayley(distEnd);
 				net.configureInformationModel(prob, steep * 1.0);
-				net.setBMtoCenter();
-				net.setTIdistBM(dist);
+				//net.setBMtoCenter();
+				//net.setTIdistBM(dist);
 
 				int i = 0;
 				System.out.println(iter);		
 				while (i < TIME) {
 					
 					if (iter == 0) {
-						number_of_followers[i] = countNumberOfSynchronizedAgents(net)/ITER;
+						number_of_followers_TI[i] = countNumberOfSynchronizedAgents(net)/ITER;
 						time[i] = i;
 					} else {
-						number_of_followers[i] = number_of_followers[i]
+						number_of_followers_TI[i] = number_of_followers_TI[i]
 								+ countNumberOfSynchronizedAgents(net)/ITER;
 					}
 
@@ -149,7 +166,7 @@ public class SynchroPercentageInTime {
 
 			}
 
-			plot = addLine(plot, time, number_of_followers);
+			plot = addLine(plot, time, number_of_followers_TI);
 		}
 
 		JFrame frame = new JFrame("a plot panel");
