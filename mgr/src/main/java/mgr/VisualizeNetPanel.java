@@ -51,7 +51,7 @@ public class VisualizeNetPanel extends JPanel {
 	//public static Net net;
 	public static NetCayley net;
 	
-	public static String interaction = "DEF"; // "INF", "BASIC"
+	public static String interaction = "INF"; // "INF", "BASIC"
 
 	public VisualizeNetPanel() {
 		restart();
@@ -69,7 +69,7 @@ public class VisualizeNetPanel extends JPanel {
 
 		/* -------------- SETTINGS 1 ----------------------- */
 		// net = new NetBA(20);
-		net = new NetCayley(3);
+		net = new NetCayley(3,4);
 		//net = new Net(20,4);
 		
 	

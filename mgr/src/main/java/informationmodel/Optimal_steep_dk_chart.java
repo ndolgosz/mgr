@@ -7,9 +7,9 @@ import tables_Cayley.T_steep_depth_k_table;
 
 public class Optimal_steep_dk_chart {
 
-	static int lambda = 8;
-	static double tau = 0.0001; //koszt nawi¹zania po³¹czenia - komunikacji
-	static double kappa = 0.000000000001;//koszt utrzymania znajomosci
+	static int lambda = 9;
+	static double tau = 0.0002; //koszt nawi¹zania po³¹czenia - komunikacji
+	static double kappa = 0.0001;//koszt utrzymania znajomosci
 
 	public static void main(String[] args) {
 		DynamicsFunctions dyn = new DynamicsFunctions();

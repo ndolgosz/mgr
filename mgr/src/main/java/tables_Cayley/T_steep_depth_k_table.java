@@ -27,11 +27,11 @@ public class T_steep_depth_k_table {
 	// private final static int avK = 3;
 	private double begSteep = 0.0;
 	private double endSteep = 5.0;
-	private int begD = 2;
+	private int begD = 1;
 	private double diff = 0.2;
 	private int endD = 4;
 	private int begK = 2;
-	private int endK = 4;
+	private int endK = 8;
 
 	public double[] steep_axis = new double[(int) ((endSteep - begSteep) / diff + 1)];
 	public double[][] dk_axis = new double[(endD - begD + 1)
@@ -74,9 +74,13 @@ public class T_steep_depth_k_table {
 
 					double T = 0;
 					// usrednianie
+					NetCayley net = new NetCayley(d, k);
+					if(net.numVertices < 40){
+						
 					for (int run = 1; run <= ITER; run++) {
 
-						NetCayley net = new NetCayley(d, k);
+						net = new NetCayley(d, k);
+						
 						net.configureInformationModel(prob, steep);
 						net.setBMtoCenter();
 						
@@ -92,6 +96,10 @@ public class T_steep_depth_k_table {
 							}
 						}
 						T = T + i - 1;
+					}
+					}
+					else {
+						T=100000000;
 					}
 					T_fun[dk_iter][steep_iter] = T / ITER;
 					steep = steep + diff;

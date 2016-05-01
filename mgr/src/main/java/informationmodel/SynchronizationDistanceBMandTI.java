@@ -16,7 +16,7 @@ import mgr.NetCayley;
 
 public class SynchronizationDistanceBMandTI {
 
-	static int ITER = 10000;
+	static int ITER = 10;
 	static int lambda = 10;
 	static double prob = 0.0;
 	static String model = "DEF"; // INF, DEF, BASIC

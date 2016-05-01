@@ -22,8 +22,8 @@ import mgr.NetCayley;
 
 public class SynchroPercentageInTime {
 
-	static int ITER = 10000;
-	static int TIME = 15000;
+	static int ITER = 100;
+	static int TIME = 100000;
 	static int lambda = 5;
 	static double prob = 0.0;
 	static String model = "INF"; // INF, DEF, BASIC
@@ -106,9 +106,9 @@ public class SynchroPercentageInTime {
 	}
 
 	public static Plot2DPanel addLine(Plot2DPanel plot, double[] time_axis,
-			double[] number_axis) {
+			double[] number_axis, String name) {
 
-		plot.addLinePlot("iteration", time_axis, number_axis);
+		plot.addLinePlot(name, time_axis, number_axis);
 		return plot;
 	}
 
@@ -123,20 +123,21 @@ public class SynchroPercentageInTime {
 		System.out.println("steep\tdist\tnumberOfNotSynchronized\t prob = "
 				+ prob);
 		//int dist = 3;
-		int steep = 2;
-		for (int dist = distEnd; dist <= distEnd; dist++) {
+		int steep = 0;
+		for (int dist = 1; dist <= distEnd; dist++) {
+			number_of_followers_TI = null;
 			number_of_followers_TI = new double[TIME];
 			
 			for (int iter = 0; iter < ITER; iter++) {
 
-				Net net = new Net(20,4);
-				//NetCayley net = new NetCayley(distEnd);
+				//Net net = new Net(20,4);
+				NetCayley net = new NetCayley(distEnd, 4);
 				net.configureInformationModel(prob, steep * 1.0);
-				//net.setBMtoCenter();
-				//net.setTIdistBM(dist);
+				net.setBMtoCenter();
+				net.setTIdistBM(dist);
 
 				int i = 0;
-				System.out.println(iter);		
+				//System.out.println(iter);		
 				while (i < TIME) {
 					
 					if (iter == 0) {
@@ -166,7 +167,8 @@ public class SynchroPercentageInTime {
 
 			}
 
-			plot = addLine(plot, time, number_of_followers_TI);
+			plot = addLine(plot, time, number_of_followers_TI,Integer.toString(dist));
+			plot.addLegend("NORTH");
 		}
 
 		JFrame frame = new JFrame("a plot panel");

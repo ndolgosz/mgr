@@ -10,7 +10,7 @@ public class CountTablesT_steep_depth_k {
 		for (double prob = 0.0; prob <= 1.0; prob += 0.2) {
 			System.out.println("\tprobability = "+prob);
 			
-			T_steep_depth_k_table T = new T_steep_depth_k_table(prob,8);
+			T_steep_depth_k_table T = new T_steep_depth_k_table(prob,9);
 			T.countTsteepkMatrix();
 			try {
 				T.saveTMatrixToFile();
