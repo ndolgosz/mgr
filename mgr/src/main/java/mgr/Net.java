@@ -1,5 +1,6 @@
 package mgr;
 
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -198,6 +199,21 @@ public class Net {
         Random r = new Random();
         BM = r.nextInt(numVertices) + 1;
     }
+    
+
+	public void setTIdistBM(int distance) throws UnexpectedException {
+
+		if (distance > 4) {
+			throw new UnexpectedException("WRONG DATA! DISTANCE NOT AVAILABLE");
+		}
+		for (int i = 1; i <= numVertices; i++) {
+			if (distanceBM.get(i).equals(distance)) {
+				TI = i;
+				return;
+			}
+		}
+		TI = -100;
+	}
     
    
     

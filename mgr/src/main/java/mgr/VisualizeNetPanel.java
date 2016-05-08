@@ -51,7 +51,7 @@ public class VisualizeNetPanel extends JPanel {
 	//public static Net net;
 	public static NetCayley net;
 	
-	public static String interaction = "INF"; // "INF", "BASIC"
+	public static String interaction = "DEF"; // "INF", "BASIC", DEF
 
 	public VisualizeNetPanel() {
 		restart();
@@ -69,7 +69,7 @@ public class VisualizeNetPanel extends JPanel {
 
 		/* -------------- SETTINGS 1 ----------------------- */
 		// net = new NetBA(20);
-		net = new NetCayley(3,4);
+		net = new NetCayley(4,3);
 		//net = new Net(20,4);
 		
 	
@@ -210,7 +210,7 @@ public class VisualizeNetPanel extends JPanel {
 			} 
 			else if(net.TI > 0 && interaction.equals("DEF")){
 				
-				def.updateOpinions_DeffuantModel(net, agents, 180);
+				def.updateOpinions_DeffuantModel(net, agents, 140);
 			}
 			else if(net.TI > 0 && interaction.equals("INF")){			
 				dyn.updateOpinions_InformationModel(net,agents);
