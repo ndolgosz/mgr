@@ -17,10 +17,10 @@ import mgr.NetCayley;
 public class SynchronizationDistanceBMandTI {
 
 	static int ITER = 10;
-	static int lambda = 10;
-	static double prob = 0.0;
+	static int lambda = 1;
+	//static double prob = 0.0;
 	static String model = "DEF"; // INF, DEF, BASIC
-	final static int distEnd = 3;
+	final static int distEnd = 1;
 
 	private static void printAgentsOpinions(HashMap<Integer, Agent> map) {
 		
@@ -46,36 +46,27 @@ public class SynchronizationDistanceBMandTI {
 
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		DeffuantModelDynamics def = new DeffuantModelDynamics();
-		System.out.println("steep\tdist\tnumberOfNotSynchronized\t prob = "+prob) ;
-		for (int dist = 1; dist <= distEnd; dist++) {
-			//System.out
-					//.println("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ D I S T A N C E _ _ _ _ _ _ _ _ _ _ _ _ _");
-			//System.out.println("Distance = " + dist);
-			for (int steep = 4; steep <= 6; steep++) {
+		System.out.println("steep\tdist\tnumberOfNotSynchronized\t") ;
+		double prob = 0.0;
+		for (int dist = 1; dist <= 3; dist++) {
+	
+			for (int steep = 0; steep <= 4; steep++) {
 
 				HashMap<Integer, Integer> numberOfOccurences = new HashMap<>();
 
-				//System.out.println("-----------------------------------------");
-				//System.out.println("Steepness = " + steep);
+	
 				for (int iter = 0; iter < ITER; iter++) {
 
-					// NetBA net = new NetBA(25, 4)
-					NetCayley net = new NetCayley(distEnd);
-					net.configureInformationModel(prob, steep * 1.0);
+					NetCayley net = new NetCayley(3);
+					//Net net = new Net(20,4);
+					net.configureInformationModel(0.0, steep * 1.0);
 					net.setTIdistBM(dist);
-					// while (net.TI == -100) {
-					// // net = new NetBA(25, 4);
-					// System.out.println("BLADDDDDDDD");
-					// net.configureInformationModel(prob, steep * 1.0);
-					// net.setTIdistBM(dist);
-					// }
 
 					ArrayList<Double> synchro_parameter = new ArrayList<Double>();
 					dTotalTemp = (double) lambda + 1;
 
 					while (dTotalTemp > lambda) {
 
-						// System.out.println("	step = " + i);
 						if (model.equals("INF")) {
 							dyn.updateOpinions_InformationModel(net,
 									def.takeRandomNeighbors(net));
@@ -88,25 +79,24 @@ public class SynchronizationDistanceBMandTI {
 									.takeRandomNeighbors(net));
 						}
 
-						// dBasicTemp = dyn.countBasicTotalSynchrony(net);
+				
 						dTotalTemp = dyn.countTotalSynchrony(net);
 						synchro_parameter.add(dTotalTemp);
 
-						if (synchro_parameter.size() > 1000) {
+						if (synchro_parameter.size() > 1000 && dTotalTemp > lambda) {
 							synchro_parameter.remove(0);
 
 							double stddev = def
 									.synchronStdDev(synchro_parameter);
-							if (stddev < 0.00000001) {
+							if (stddev < 0.000000001) {
 								
-								//printAgentsOpinions(net.agentsVertices);
-								//printSynchroParam(synchro_parameter);
 
 								if (numberOfOccurences.containsKey(dist)) {
 									numberOfOccurences.replace(dist,
 											numberOfOccurences.get(dist) + 1);
 								} else {
 									numberOfOccurences.put(dist, 1);
+									printAgentsOpinions(net.agentsVertices);
 								}
 								break;
 							}
@@ -122,16 +112,14 @@ public class SynchronizationDistanceBMandTI {
 					Integer key = entry.getKey();
 					System.out.print("\n" + steep + "\t" + key + "\t"
 							+ numberOfOccurences.get(key));
+					
+					
+					
 				}
 
-				/*
-				 * System.out.println("Iterations: "); for (Map.Entry<Integer,
-				 * Integer> entry : numberOfIterations.entrySet()) { Integer key
-				 * = entry.getKey(); Integer value = entry.getValue();
-				 * System.out.println("distance: " + key + " iterations: " +
-				 * value/numberOfOccurences.get(key)); }
-				 */
 			}
+			prob = prob + 0.25;
+			
 		}
 	}
 }

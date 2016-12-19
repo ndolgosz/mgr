@@ -17,8 +17,8 @@ public class AgentsOpinionsInTime {
 	
 	public static void main(String[] args) {
 
-		Net net = new Net(100, 99);
-		//net.configureInformationModel(prob, steep);
+		Net net = new Net(20, 4);
+		net.configureInformationModel(prob, steep);
 		DynamicsFunctions dyn = new DynamicsFunctions();
 		DeffuantModelDynamics def = new DeffuantModelDynamics();
 		HashMap<Integer, double[]> mapOpinions = new HashMap<>();
@@ -37,7 +37,7 @@ public class AgentsOpinionsInTime {
 				dyn.updateOpinions_InformationModel(net,dyn.takeRandomNeighbors(net));
 			}
 			else if(model.equals("DEF")){
-				def.updateOpinions_DeffuantModel(net, dyn.takeRandomNeighbors(net),45);
+				def.updateOpinions_DeffuantModel(net, dyn.takeRandomNeighbors(net),90);
 			}
 			else if(model.equals("BASIC")){
 				dyn.updateOpinions_BasicModel(dyn.takeRandomNeighbors(net));
@@ -64,7 +64,7 @@ public static Plot2DPanel createPlot(HashMap<Integer, double[]> mapOpinions, dou
 		plot.setAxisLabels("t", "opinion");
 		
 		for (Entry<Integer, double[]> entry : mapOpinions.entrySet()) {
-			Color color = Color.gray;
+			Color color = Color.lightGray;
 			if(entry.getKey() == net.BM)
 				color = Color.red;
 			else if(entry.getKey() == net.TI)

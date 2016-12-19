@@ -24,11 +24,11 @@ import mgr.NetCayley;
 
 public class SynchroPercentageInTime {
 
-	static int ITER = 100000;
-	static int TIME = 8000;
+	static int ITER = 10000;
+	static int TIME = 10000;
 	static int lambda = 5;
 	static double prob = 0.0;
-	static String model = "INF"; // INF, DEF, BASIC
+	static String model = "DEF"; // INF, DEF, BASIC
 	final static int distEnd = 3;
 	final static int steep = 2;
 

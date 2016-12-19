@@ -13,7 +13,7 @@ import tables_Cayley.T_steep_depth_k_table;
 public class DynamicsFunctions {
 
 
-	public Agent[] takeRandomNeighbors(Net net) {
+/*	public Agent[] takeRandomNeighbors(Net net) {
 		Random r = new Random();
 		int i = r.nextInt(net.numVertices) + 1;
 		int j;
@@ -25,9 +25,9 @@ public class DynamicsFunctions {
 		Agent[] agents = { net.agentsVertices.get(i), net.agentsVertices.get(j) };
 		
 		return agents;
-	}
+	}*/
 	
-public Agent[] takeRandomNeighbors(NetBA net) {
+public Agent[] takeRandomNeighbors(Net net) {
 		
 		
 		Random r = new Random();
@@ -40,6 +40,18 @@ public Agent[] takeRandomNeighbors(NetBA net) {
 		return agents;
 	}
 
+public Agent[] takeRandomNeighbors(NetBA net) {
+	
+	
+	Random r = new Random();
+	
+	Collection<Integer> edges = net.net.getEdges();	
+	int i = r.nextInt(edges.size());
+	edu.uci.ics.jung.graph.util.Pair<Integer> pair = net.net.getEndpoints((int) edges.toArray()[i]);
+	
+	Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
+	return agents;
+}
 public Agent[] takeRandomNeighbors(NetCayley net) {
 	
 	
@@ -50,9 +62,9 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 	edu.uci.ics.jung.graph.util.Pair<Integer> pair = net.net.getEndpoints((int) edges.toArray()[i]);
 	
 	Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
-	//System.out.println(pair.getFirst()+" "+pair.getSecond());
 	return agents;
 }
+
 
 
 	private int randomAgent(Net net) {
@@ -275,7 +287,7 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 		double ct = 0;
 		for (int i = 1; i <= net.numVertices; i++) {
 			double iOp = net.agentsVertices.get(i).getOpinion();
-			ct = ct + Math.abs(iOp - tiOp);
+			ct = ct + Math.abs(iOp - tiOp);		
 		}
 		ct = ct / (net.numVertices);
 		return ct;
@@ -286,11 +298,12 @@ public Agent[] takeRandomNeighbors(NetCayley net) {
 		double ct = 0;
 		for (int i = 1; i <= net.numVertices; i++) {
 			double iOp = net.agentsVertices.get(i).getOpinion();
-			ct = ct + Math.abs(iOp - tiOp);
+			ct = ct + Math.abs(iOp - tiOp);		
 		}
 		ct = ct / (net.numVertices);
 		return ct;
 	}
+	
 
 	private double T_nk(double n, int k, double[][] Tnk, double[] n_axis,
 			double[] k_axis) {

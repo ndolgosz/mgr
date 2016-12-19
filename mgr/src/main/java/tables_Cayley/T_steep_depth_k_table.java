@@ -82,7 +82,7 @@ public class T_steep_depth_k_table {
 						net = new NetCayley(d, k);
 						
 						net.configureInformationModel(prob, steep);
-						net.setBMtoCenter();
+						
 						
 						double ct = lambda + 1;
 						int i = 0;

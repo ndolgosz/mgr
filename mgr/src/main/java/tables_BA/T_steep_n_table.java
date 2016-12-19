@@ -68,7 +68,6 @@ public class T_steep_n_table {
 					//Net net = new Net(n,4);
 					NetBA net = new NetBA(n);
 					net.configureInformationModel(prob, steep);
-					net.setBMtoCenter();
 					double ct = lambda + 1;
 
 					int i = 0;

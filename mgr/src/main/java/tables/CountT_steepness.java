@@ -45,7 +45,6 @@ public class CountT_steepness {
 				
 				NetBA net = new NetBA(n_opt);				
 				net.configureInformationModel(prob, steep);
-				net.setBMtoCenter();
 				
 				double ct = lambda + 1;
 				notSync = 0;

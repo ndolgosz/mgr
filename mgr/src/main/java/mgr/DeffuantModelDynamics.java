@@ -14,7 +14,7 @@ public class DeffuantModelDynamics {
 		return net.agentsVertices.get(r.nextInt(net.numVertices) + 1);
 	}
 
-	public Agent[] takeRandomNeighbors(Net net) {
+/*	public Agent[] takeRandomNeighbors(Net net) {
 		Random r = new Random();
 		int i = r.nextInt(net.numVertices) + 1;
 		int j;
@@ -25,22 +25,9 @@ public class DeffuantModelDynamics {
 			j = i;
 		Agent[] agents = { net.agentsVertices.get(i), net.agentsVertices.get(j) };
 		return agents;
-	}
-	
-	public Agent[] takeRandomNeighbors(NetBA net) {
-		
-		
-		Random r = new Random();
-		
-		Collection<Integer> edges = net.net.getEdges();	
-		int i = r.nextInt(edges.size());
-		edu.uci.ics.jung.graph.util.Pair<Integer> pair = net.net.getEndpoints((int) edges.toArray()[i]);
-		
-		Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
-		return agents;
-	}
-	
-	public Agent[] takeRandomNeighbors(NetCayley net) {
+	}*/
+
+	public Agent[] takeRandomNeighbors(Net net) {
 		
 		
 		Random r = new Random();
@@ -53,6 +40,31 @@ public class DeffuantModelDynamics {
 		return agents;
 	}
 
+	public Agent[] takeRandomNeighbors(NetBA net) {
+		
+		
+		Random r = new Random();
+		
+		Collection<Integer> edges = net.net.getEdges();	
+		int i = r.nextInt(edges.size());
+		edu.uci.ics.jung.graph.util.Pair<Integer> pair = net.net.getEndpoints((int) edges.toArray()[i]);
+		
+		Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
+		return agents;
+	}
+	public Agent[] takeRandomNeighbors(NetCayley net) {
+		
+		
+		Random r = new Random();
+		
+		Collection<Integer> edges = net.net.getEdges();	
+		int i = r.nextInt(edges.size());
+		edu.uci.ics.jung.graph.util.Pair<Integer> pair = net.net.getEndpoints((int) edges.toArray()[i]);
+		
+		Agent[] agents = { net.agentsVertices.get(pair.getFirst()), net.agentsVertices.get(pair.getSecond()) };
+		return agents;
+	}
+	
 
 	public int randomAgent(Net net) {
 		Random r = new Random();
@@ -72,7 +84,7 @@ public class DeffuantModelDynamics {
 		double ag1s = agent1.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		double ag2s = agent2.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		
-		if(Math.abs(agent1.getOpinion() - agent2.getOpinion()) < threshold){
+		if(Math.abs(agent1.getOpinion() - agent2.getOpinion())< threshold){
 			
 			if(agent1.getVertex() != TI && agent2.getVertex() != TI){
 				agent1.setOpinion(agent1.getOpinion() + ag2s * (agent2.getOpinion() - agent1.getOpinion()));
@@ -98,7 +110,7 @@ public class DeffuantModelDynamics {
 		double ag1s = agent1.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		double ag2s = agent2.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		
-		if(Math.abs(agent1.getOpinion() - agent2.getOpinion()) < threshold){
+		if(Math.abs(agent1.getOpinion() - agent2.getOpinion())< threshold){
 			
 			if(agent1.getVertex() != TI && agent2.getVertex() != TI){
 				agent1.setOpinion(agent1.getOpinion() + ag2s * (agent2.getOpinion() - agent1.getOpinion()));
@@ -124,7 +136,7 @@ public class DeffuantModelDynamics {
 		double ag1s = agent1.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		double ag2s = agent2.getWeight() / (agent1.getWeight() + agent2.getWeight());
 		
-		if(Math.abs(agent1.getOpinion() - agent2.getOpinion()) < threshold){
+		if(Math.abs(agent1.getOpinion() - agent2.getOpinion())< threshold){
 			
 			if(agent1.getVertex() != TI && agent2.getVertex() != TI){
 				agent1.setOpinion(agent1.getOpinion() + ag2s * (agent2.getOpinion() - agent1.getOpinion()));

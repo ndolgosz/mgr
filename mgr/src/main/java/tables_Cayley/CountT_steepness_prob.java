@@ -48,7 +48,6 @@ public class CountT_steepness_prob {
 				//NetCayley net = new NetCayley(4);				
 				NetBA net = new NetBA(25);
 				net.configureInformationModel(prob, steep);
-				net.setBMtoCenter();
 				
 				double ct = lambda + 1;
 				notSync = 0;

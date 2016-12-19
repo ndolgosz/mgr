@@ -33,8 +33,7 @@ public class NetCayley {
 		numVertices = retrieveNumberOfVertices(deep);
 		numEdges = k;
 		this.steepness = 1.0;
-		agentsVertices = new HashMap<Integer, Agent>();
-		
+		agentsVertices = new HashMap<Integer, Agent>();	
 		updateGraph(deep,numEdges);
 
 		while (new WeakComponentClusterer<Integer, Integer>().transform(net)
@@ -42,7 +41,6 @@ public class NetCayley {
 			updateGraph(deep,numEdges);
 		}
 		numVertices = getMaxIdFromLeafs();
-		
 		this.copyOfAgents = getMapOfOpinions();
 
 	}
@@ -96,14 +94,14 @@ public class NetCayley {
 		chooseTI(prob);
 		setWeightsToEveryAgent();
 	}
-
-	private void resetAgentsOpinion() {
+	
+	public void resetAgentsOpinion() {
 		for (int i = 1; i <= numVertices; i++) {
 			agentsVertices.get(i).setOpinion(copyOfAgents.get(i));
 		}
 	}
 
-	private void updateGraph(int deep, int k) {
+	public void updateGraph(int deep, int k) {
 
 		net = new UndirectedSparseGraph<Integer, Integer>();
 
@@ -176,13 +174,12 @@ public class NetCayley {
 			TI = tmp;
 		}
 	}
-
-	private void chooseBM() {
+	
+	public void chooseBM() {
 		BM = 1;
 	}
 
-	public void setBMtoCenter() {
-
+	private void setBMtoCenter() {
 		BM = 1;
 	}
 

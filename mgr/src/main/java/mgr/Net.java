@@ -23,17 +23,18 @@ public class Net {
     public double steepness;
     public HashMap<Integer, Agent> agentsVertices;
     public Map<Integer, Number> distanceBM;
-    public Graph<Integer, String> net;
+    public Graph<Integer, Integer> net;
     public Map<Integer,Double> copyOfAgents;
 
     public Net(int n, int k) {
+    	
         this.steepness = 1.0;
         agentsVertices = new HashMap<Integer, Agent>();
         this.numVertices = n;
         this.numEdges = k;
         updateGraph();
         
-        while (new WeakComponentClusterer<Integer, String>().transform(net)
+        while (new WeakComponentClusterer<Integer, Integer>().transform(net)
                 .size() != 1) {
             updateGraph();
         }
@@ -49,26 +50,27 @@ public class Net {
 		}
 		return map;
 	}
-
+   
 	public void configureInformationModel(double prob, double steep){
     	this.steepness = steep;
     	resetAgentsOpinion();
     	chooseBM();
-        UnweightedShortestPath<Integer, String> path = new UnweightedShortestPath<>(
+        UnweightedShortestPath<Integer, Integer> path = new UnweightedShortestPath<>(
                 net);
         distanceBM = path.getDistanceMap(BM);
         chooseTI(prob);
         setWeightsToEveryAgent();
     }
     
-    private void resetAgentsOpinion(){
+    public void resetAgentsOpinion(){
     	for(int i = 1; i <= numVertices; i++){
     		agentsVertices.get(i).setOpinion(copyOfAgents.get(i));
     	}
     }
-	private void updateGraph() {
+    
+	public void updateGraph() {
 
-        net = new UndirectedSparseGraph<Integer, String>();
+        net = new UndirectedSparseGraph<Integer, Integer>();
         //net = new BarabasiAlbertGenerator(net, vertexFactory, edgeFactory, init_vertices, numEdgesToAttach, seed, seedVertices)
 
         for (int i = 1; i <= numVertices; i++) {
@@ -85,7 +87,7 @@ public class Net {
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
                 if (connections[i][j] == 1) {
-                    net.addEdge(String.valueOf(edge), i + 1, j + 1);
+                    net.addEdge(edge, i + 1, j + 1);
                 }
                 edge++;
             }
@@ -194,8 +196,8 @@ public class Net {
             TI = tmp;
         }
     }
-
-    private void chooseBM() {
+  
+    public void chooseBM() {
         Random r = new Random();
         BM = r.nextInt(numVertices) + 1;
     }

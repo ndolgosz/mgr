@@ -37,11 +37,9 @@ public class NetBA {
 		agentsVertices = new HashMap<Integer, Agent>();
 		this.numVertices = n;
 		
-		//System.out.println("starting building net");
 		updateGraph();
-
-		
-		  while (new WeakComponentClusterer<Integer, Integer>().transform(net)
+	
+		 while (new WeakComponentClusterer<Integer, Integer>().transform(net)
 		  .size() != 1) { updateGraph(); }
 		 
 		this.copyOfAgents = getMapOfOpinions();
@@ -76,25 +74,23 @@ public class NetBA {
 		
 		
 	
-
-	private void resetAgentsOpinion() {
+	
+	public void resetAgentsOpinion() {
 		for (int i = 1; i <= numVertices; i++) {
 			agentsVertices.get(i).setOpinion(copyOfAgents.get(i));
 		}
 	}
+	
+	public void updateGraph() {
 
-	private void updateGraph() {
+		Factory graphFactory = UndirectedSparseGraph.getFactory();
 
-		
-		Factory graphFactory = UndirectedSparseGraph
-				.getFactory();
-		
 		Factory<Integer> vertexFactory = new Factory<Integer>() {
 			public Integer create() {
 				return nrV++;
 			}
 		};
-		//System.out.println("edge factory");
+
 		Factory<Integer> edgeFactory = new Factory<Integer>() {
 			public Integer create() {
 				return nrE++;
@@ -102,15 +98,14 @@ public class NetBA {
 		};
 
 		Set<Integer> seedSet = new HashSet<Integer>();
-		
-		
-		BarabasiAlbertGenerator<Integer, Integer> bag = new BarabasiAlbertGenerator(graphFactory,
-				vertexFactory, edgeFactory, 1, 1, seedSet);
-			
+
+		BarabasiAlbertGenerator<Integer, Integer> bag = new BarabasiAlbertGenerator(graphFactory, vertexFactory,
+				edgeFactory, 1, 1, seedSet);
+
 		bag.evolveGraph(numVertices - 1);
-		
+
 		this.net = (Graph<Integer, Integer>) bag.create();
-		
+
 		for (int i = 1; i <= numVertices; i++) {
 			agentsVertices.put(i, new Agent(i));
 		}
@@ -198,16 +193,18 @@ public class NetBA {
 			TI = tmp;
 		}
 	}
-
-	private void chooseBM() {
+	
+	
+	public void chooseBM() {
 		Random r = new Random();
 		BM = r.nextInt(numVertices) + 1;
 	}
 	
-	public void setBMtoCenter() {
+	private void setBMtoCenter() {
 		
 		int highestDegree = 1;
 		for(int i = 1; i <= numVertices; i++){
+		
 		 if(net.degree(i) > net.degree(highestDegree)){
 			 highestDegree = i;
 		 }
